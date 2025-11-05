@@ -13,28 +13,50 @@ class RegisterAction
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = $_POST['email'] ?? '';
+            $email = trim($_POST['email'] ?? '');
             $password = $_POST['password'] ?? '';
-            $nom = $_POST['nom'] ?? '';
-            $prenom = $_POST['prenom'] ?? '';
+            $password_confirm = $_POST['password_confirm'] ?? '';
+            $nom = trim($_POST['nom'] ?? '');
+            $prenom = trim($_POST['prenom'] ?? '');
             
-            $repo = new UserRepository();
+            // Validation
+            $errors = [];
             
-            // Vérifier si l'email existe déjà
-            if ($repo->findByEmail($email)) {
-                $error = "Cet email est déjà utilisé.";
-            } else {
-                // Créer le nouvel utilisateur
-                $user = new User();
-                $user->email = $email;
-                $user->password_hash = password_hash($password, PASSWORD_DEFAULT);
-                $user->nom = $nom;
-                $user->prenom = $prenom;
+            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $errors[] = "Email invalide.";
+            }
+            
+            if (empty($password) || strlen($password) < 6) {
+                $errors[] = "Le mot de passe doit contenir au moins 6 caractères.";
+            }
+            
+            if ($password !== $password_confirm) {
+                $errors[] = "Les mots de passe ne correspondent pas.";
+            }
+            
+            if (empty($nom) || empty($prenom)) {
+                $errors[] = "Le nom et le prénom sont obligatoires.";
+            }
+            
+            if (empty($errors)) {
+                $repo = new UserRepository();
                 
-                if ($repo->save($user)) {
-                    $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                // Vérifier si l'email existe déjà
+                if ($repo->findByEmail($email)) {
+                    $errors[] = "Cet email est déjà utilisé.";
                 } else {
-                    $error = "Une erreur est survenue lors de l'inscription.";
+                    // Créer le nouvel utilisateur
+                    $user = new User();
+                    $user->email = $email;
+                    $user->password_hash = password_hash($password, PASSWORD_DEFAULT);
+                    $user->nom = $nom;
+                    $user->prenom = $prenom;
+                    
+                    if ($repo->save($user)) {
+                        $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                    } else {
+                        $errors[] = "Une erreur est survenue lors de l'inscription.";
+                    }
                 }
             }
         }
@@ -42,31 +64,49 @@ class RegisterAction
         // Formulaire d'inscription
         $html = "<h1>Inscription</h1>";
         
-        if (isset($error)) {
-            $html .= "<p class='error'>{$error}</p>";
+        if (!empty($errors)) {
+            $html .= "<div class='error'>";
+            foreach ($errors as $error) {
+                $html .= "<p>{$error}</p>";
+            }
+            $html .= "</div>";
         }
         
         if (isset($success)) {
-            $html .= "<p class='success'>{$success}</p>";
-            $html .= "<p style='text-align: center;'><a href='index.php?action=login' class='btn'>Se connecter</a></p>";
+            $html .= "<div class='success'>
+                        <p>{$success}</p>
+                      </div>";
+            $html .= "<p style='text-align: center; margin-top: 20px;'>
+                        <a href='index.php?action=login' class='btn' style='display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;'>
+                            Se connecter
+                        </a>
+                      </p>";
         } else {
+            $email_value = htmlspecialchars($_POST['email'] ?? '');
+            $nom_value = htmlspecialchars($_POST['nom'] ?? '');
+            $prenom_value = htmlspecialchars($_POST['prenom'] ?? '');
+            
             $html .= "
                 <form method='POST'>
                     <div>
                         <label>Prénom :</label>
-                        <input type='text' name='prenom' required>
+                        <input type='text' name='prenom' value='{$prenom_value}' required>
                     </div>
                     <div>
                         <label>Nom :</label>
-                        <input type='text' name='nom' required>
+                        <input type='text' name='nom' value='{$nom_value}' required>
                     </div>
                     <div>
                         <label>Email :</label>
-                        <input type='email' name='email' required>
+                        <input type='email' name='email' value='{$email_value}' required>
                     </div>
                     <div>
                         <label>Mot de passe :</label>
                         <input type='password' name='password' required minlength='6'>
+                    </div>
+                    <div>
+                        <label>Confirmer le mot de passe :</label>
+                        <input type='password' name='password_confirm' required minlength='6'>
                     </div>
                     <button type='submit'>S'inscrire</button>
                 </form>
