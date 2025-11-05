@@ -63,4 +63,18 @@ class UserRepository
         
         return $user;
     }
+
+    public function updateInfo(int $id, string $email, string $nom, string $prenom): bool
+    {
+        $pdo = ConnectionFactory::getConnection();
+        $stmt = $pdo->prepare("UPDATE user SET email = ?, nom = ?, prenom = ? WHERE id = ?");
+        return $stmt->execute([$email, $nom, $prenom, $id]);
+    }
+
+    public function updatePassword(int $id, string $passwordHash): bool
+    {
+        $pdo = ConnectionFactory::getConnection();
+        $stmt = $pdo->prepare("UPDATE user SET password_hash = ? WHERE id = ?");
+        return $stmt->execute([$passwordHash, $id]);
+    }
 }
