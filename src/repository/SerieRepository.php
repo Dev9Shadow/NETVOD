@@ -1,7 +1,7 @@
 <?php
 namespace netvod\repository;
 
-use netvod\model\Serie;
+use netvod\entity\Serie;
 use PDO;
 
 class SerieRepository
@@ -11,8 +11,24 @@ class SerieRepository
         $pdo = ConnectionFactory::getConnection();
         $query = "SELECT * FROM serie";
         $stmt = $pdo->query($query);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Serie::class);
-        return $stmt->fetchAll();
+        
+        $series = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $serie = new Serie();
+            $serie->id = (int)$row['id'];
+            $serie->titre = $row['titre'];
+            $serie->descriptif = $row['descriptif'] ?? '';
+            $serie->img = $row['img'] ?? '';
+            $serie->annee = (int)($row['annee'] ?? 0);
+            $serie->date_ajout = $row['date_ajout'] ?? '';
+            $serie->description = $row['description'] ?? null;
+            $serie->genre = $row['genre'] ?? null;
+            $serie->image_url = $row['image_url'] ?? null;
+            
+            $series[] = $serie;
+        }
+        
+        return $series;
     }
 
     public function findById(int $id): ?Serie
@@ -20,8 +36,23 @@ class SerieRepository
         $pdo = ConnectionFactory::getConnection();
         $stmt = $pdo->prepare("SELECT * FROM serie WHERE id = ?");
         $stmt->execute([$id]);
-        $stmt->setFetchMode(PDO::FETCH_CLASS, \netvod\model\Serie::class);
-        return $stmt->fetch() ?: null;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$row) {
+            return null;
+        }
+        
+        $serie = new Serie();
+        $serie->id = (int)$row['id'];
+        $serie->titre = $row['titre'];
+        $serie->descriptif = $row['descriptif'] ?? '';
+        $serie->img = $row['img'] ?? '';
+        $serie->annee = (int)($row['annee'] ?? 0);
+        $serie->date_ajout = $row['date_ajout'] ?? '';
+        $serie->description = $row['description'] ?? null;
+        $serie->genre = $row['genre'] ?? null;
+        $serie->image_url = $row['image_url'] ?? null;
+        
+        return $serie;
     }
-
 }

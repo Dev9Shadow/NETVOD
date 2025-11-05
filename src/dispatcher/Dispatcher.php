@@ -3,6 +3,12 @@ namespace netvod\dispatcher;
 
 use netvod\action\DefaultAction;
 
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+error_reporting(E_ALL);
+
 class Dispatcher
 {
     public function run(): void

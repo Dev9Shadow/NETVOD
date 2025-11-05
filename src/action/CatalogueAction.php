@@ -3,6 +3,7 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\SerieRepository;
+use netvod\renderer\Layout;
 
 class CatalogueAction
 {
@@ -21,16 +22,20 @@ class CatalogueAction
         if (empty($series)) {
             $html .= "<p>Aucune série en base.</p>";
         } else {
+            $html .= "<div class='series-grid'>";
             foreach ($series as $s) {
-                $html .= "<div style='border:1px solid #ccc; margin:5px; padding:10px;'>
-                            <h3><a href='index.php?action=serie&id={$s->id}'>{$s->titre}</a></h3>
-                            <p>{$s->descriptif}</p>
-                            <small>Année : {$s->annee}</small>
+                $descriptif = $s->descriptif ?? 'Pas de description disponible';
+                $annee = $s->annee ?? 'N/A';
+                
+                $html .= "<div class='card'>
+                            <h3><a href='index.php?action=serie&id={$s->id}'>" . htmlspecialchars($s->titre) . "</a></h3>
+                            <p>" . htmlspecialchars($descriptif) . "</p>
+                            <small>Année : {$annee}</small>
                           </div>";
             }
+            $html .= "</div>";
         }
 
-        $html .= "<p><a href='index.php'>⬅ Retour à l'accueil</a></p>";
-        return $html;
+        return Layout::render($html, "Catalogue - NETVOD");
     }
 }

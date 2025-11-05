@@ -1,0 +1,349 @@
+/* Reset et base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: #141414;
+    color: #ffffff;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation */
+nav {
+    background-color: #000000;
+    padding: 20px 0;
+    border-bottom: 2px solid #e50914;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #e50914;
+}
+
+nav a:first-child {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #e50914;
+    margin-right: auto;
+}
+
+/* Conteneur principal */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+    flex: 1;
+}
+
+/* Titres */
+h1 {
+    color: #e50914;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+h2 {
+    color: #e50914;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+h3 {
+    color: #ffffff;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+
+h4 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+/* Liens */
+a {
+    color: #e50914;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #f40612;
+}
+
+/* Grille de séries */
+.series-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 2fr);
+    gap: 25px;
+    margin: 0;
+}
+
+/* Cartes de séries/épisodes */
+.card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(229, 9, 20, 0.3);
+    border-color: #e50914;
+}
+
+.card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+}
+
+.card p, .card small {
+    font-size: 0.95rem;
+    color: #b3b3b3;
+}
+
+/* Page d'accueil */
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #b3b3b3;
+    margin-bottom: 30px;
+}
+
+.hero .btn {
+    display: inline-block;
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 15px 40px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.hero .btn:hover {
+    background-color: #f40612;
+    transform: scale(1.05);
+}
+
+/* Formulaires */
+form {
+    background-color: #1f1f1f;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 450px;
+    margin: 20px auto;
+    border: 1px solid #333;
+}
+
+label {
+    display: block;
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    background-color: #333;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #e50914;
+    box-shadow: 0 0 5px rgba(229, 9, 20, 0.5);
+}
+
+/* Boutons */
+button,
+.btn {
+    background-color: #e50914;
+    color: #ffffff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #f40612;
+    transform: scale(1.05);
+}
+
+button:active,
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Bouton secondaire */
+.btn-secondary {
+    background-color: #333;
+    color: #ffffff;
+}
+
+.btn-secondary:hover {
+    background-color: #555;
+}
+
+/* Messages d'erreur/succès */
+.error {
+    background-color: #8b0000;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #e50914;
+}
+
+.success {
+    background-color: #155724;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    border-left: 4px solid #28a745;
+}
+
+/* Liste d'épisodes */
+.episode-list {
+    margin-top: 30px;
+}
+
+.episode-item {
+    background-color: #1f1f1f;
+    border-left: 4px solid #e50914;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.episode-item:hover {
+    background-color: #2a2a2a;
+}
+
+/* Texte */
+small {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* Séparateur */
+hr {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 30px 0;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    border-top: 1px solid #333;
+    background-color: #000;
+    margin-top: auto;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .series-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .series-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    nav .container {
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 0 20px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+}

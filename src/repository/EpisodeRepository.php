@@ -1,7 +1,7 @@
 <?php
 namespace netvod\repository;
 
-use netvod\model\Episode;
+use netvod\entity\Episode;
 use PDO;
 
 class EpisodeRepository
@@ -9,7 +9,7 @@ class EpisodeRepository
     public function findBySerie(int $idSerie): array
     {
         $pdo = ConnectionFactory::getConnection();
-        $query = "SELECT * FROM episode WHERE serie_id = ?";
+        $query = "SELECT * FROM episode WHERE id_serie = ? ORDER BY numero";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$idSerie]);
         $stmt->setFetchMode(PDO::FETCH_CLASS, Episode::class);

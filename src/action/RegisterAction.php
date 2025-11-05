@@ -3,50 +3,79 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
+use netvod\entity\User;
+use netvod\renderer\Layout;
 
 class RegisterAction
 {
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
-        $html = "<h1>Inscription</h1>";
-
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email']);
-            $password = trim($_POST['password']);
-            $nom = trim($_POST['nom']);
-            $prenom = trim($_POST['prenom']);
-
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            $nom = $_POST['nom'] ?? '';
+            $prenom = $_POST['prenom'] ?? '';
+            
             $repo = new UserRepository();
-            $existing = $repo->findByEmail($email);
-
-            if ($existing) {
-                $html .= "<p style='color:red'>Un compte existe déjà avec cet email.</p>";
+            
+            // Vérifier si l'email existe déjà
+            if ($repo->findByEmail($email)) {
+                $error = "Cet email est déjà utilisé.";
             } else {
-                $repo->create($email, $password, $nom, $prenom);
-                $html .= "<p style='color:green'>Compte créé avec succès ! Vous pouvez maintenant vous connecter.</p>";
+                // Créer le nouvel utilisateur
+                $user = new User();
+                $user->email = $email;
+                $user->password_hash = password_hash($password, PASSWORD_DEFAULT);
+                $user->nom = $nom;
+                $user->prenom = $prenom;
+                
+                if ($repo->save($user)) {
+                    $success = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
+                } else {
+                    $error = "Une erreur est survenue lors de l'inscription.";
+                }
             }
         }
-
-        $html .= <<<HTML
-        <form method="POST">
-            <label>Email :</label><br>
-            <input type="email" name="email" required><br><br>
-
-            <label>Mot de passe :</label><br>
-            <input type="password" name="password" required><br><br>
-
-            <label>Nom :</label><br>
-            <input type="text" name="nom"><br><br>
-
-            <label>Prénom :</label><br>
-            <input type="text" name="prenom"><br><br>
-
-            <button type="submit">Créer le compte</button>
-        </form>
-        <p><a href='index.php'>Retour à l'accueil</a></p>
-        HTML;
-
-        return $html;
+        
+        // Formulaire d'inscription
+        $html = "<h1>Inscription</h1>";
+        
+        if (isset($error)) {
+            $html .= "<p class='error'>{$error}</p>";
+        }
+        
+        if (isset($success)) {
+            $html .= "<p class='success'>{$success}</p>";
+            $html .= "<p style='text-align: center;'><a href='index.php?action=login' class='btn'>Se connecter</a></p>";
+        } else {
+            $html .= "
+                <form method='POST'>
+                    <div>
+                        <label>Prénom :</label>
+                        <input type='text' name='prenom' required>
+                    </div>
+                    <div>
+                        <label>Nom :</label>
+                        <input type='text' name='nom' required>
+                    </div>
+                    <div>
+                        <label>Email :</label>
+                        <input type='email' name='email' required>
+                    </div>
+                    <div>
+                        <label>Mot de passe :</label>
+                        <input type='password' name='password' required minlength='6'>
+                    </div>
+                    <button type='submit'>S'inscrire</button>
+                </form>
+                <p style='text-align: center; margin-top: 20px;'>
+                    <a href='index.php?action=login'>Déjà un compte ? Se connecter</a>
+                </p>
+            ";
+        }
+        
+        return Layout::render($html, "Inscription - NETVOD");
     }
 }

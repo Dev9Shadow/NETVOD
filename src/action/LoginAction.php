@@ -3,50 +3,63 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
+use netvod\renderer\Layout;
 
 class LoginAction
 {
     public function execute(): string
     {
-        session_start();
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
-        $html = "<h1>Connexion</h1>";
-
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email']);
-            $password = trim($_POST['password']);
-
+            $email = $_POST['email'] ?? '';
+            $password = $_POST['password'] ?? '';
+            
             $repo = new UserRepository();
             $user = $repo->findByEmail($email);
-
-            if ($user && password_verify($password, $user->password)) {
-                $_SESSION['user'] = [
-                    'id' => $user->id,
-                    'email' => $user->email,
-                    'nom' => $user->nom,
-                    'prenom' => $user->prenom
-                ];
-                $html .= "<p style='color:green'>Connexion réussie</p>
-                          <p><a href='index.php'>Retour à l'accueil</a></p>";
-                return $html;
+            
+            if ($user && password_verify($password, $user->password_hash)) {
+                // Connexion réussie
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_nom'] = $user->nom;
+                $_SESSION['user_prenom'] = $user->prenom;
+                
+                header('Location: index.php');
+                exit;
             } else {
-                $html .= "<p style='color:red'>Email ou mot de passe incorrect.</p>";
+                // Échec de connexion
+                $error = "Email ou mot de passe incorrect.";
             }
         }
-
-        $html .= <<<HTML
-        <form method="POST">
-            <label>Email :</label><br>
-            <input type="email" name="email" required><br><br>
-
-            <label>Mot de passe :</label><br>
-            <input type="password" name="password" required><br><br>
-
-            <button type="submit">Se connecter</button>
-        </form>
-        <p><a href='index.php?action=register'>Créer un compte</a></p>
-        HTML;
-
-        return $html;
+        
+        // Formulaire de connexion
+        $html = "<h1>Connexion</h1>";
+        
+        if (isset($error)) {
+            $html .= "<p class='error'>{$error}</p>";
+        }
+        
+        $html .= "
+            <form method='POST'>
+                <div>
+                    <label>Email :</label>
+                    <input type='email' name='email' required>
+                </div>
+                <div>
+                    <label>Mot de passe :</label>
+                    <input type='password' name='password' required>
+                </div>
+                <button type='submit'>Se connecter</button>
+            </form>
+            <p style='text-align: center; margin-top: 20px;'>
+                <a href='index.php?action=register'>Pas encore de compte ? S'inscrire</a>
+            </p>
+        ";
+        
+        return Layout::render($html, "Connexion - NETVOD");
     }
 }
