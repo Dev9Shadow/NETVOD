@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS serie (
     genre VARCHAR(100) DEFAULT '',
     annee INT NOT NULL,
     img VARCHAR(255) DEFAULT NULL,
-    date_ajout DATE,
+    date_ajout DATE
 );
 
 -- ---------------------------------------------------------
