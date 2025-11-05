@@ -1,4 +1,4 @@
-INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `serie_id`) VALUES
+INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `id_serie`) VALUES
 (1,	1,	'Le lac',	'Le lac se révolte ',	8,	'lake.mp4',	1),
 (2,	2,	'Le lac : les mystères de l\'eau trouble',	'Un grand mystère, l\'eau du lac est trouble. Jack trouvera-t-il la solution ?',	8,	'lake.mp4',	1),
 (3,	3,	'Le lac : les mystères de l\'eau sale',	'Un grand mystère, l\'eau du lac est sale. Jack trouvera-t-il la solution ?',	8,	'lake.mp4',	1),

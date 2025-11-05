@@ -23,8 +23,6 @@ CREATE TABLE IF NOT EXISTS user (
     password_hash VARCHAR(255) NOT NULL,
     nom VARCHAR(100) DEFAULT '',
     prenom VARCHAR(100) DEFAULT '',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    is_active TINYINT(1) NOT NULL DEFAULT 1
 );
 
 -- ---------------------------------------------------------
@@ -49,7 +47,7 @@ CREATE TABLE IF NOT EXISTS episode (
     titre VARCHAR(255) NOT NULL,
     resume TEXT,
     duree INT NOT NULL DEFAULT 0,
-    video_url VARCHAR(255) DEFAULT NULL,
+    file VARCHAR(255) DEFAULT NULL,
     CONSTRAINT fk_episode_serie
         FOREIGN KEY (id_serie)
         REFERENCES serie(id)

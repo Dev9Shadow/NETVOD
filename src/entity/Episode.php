@@ -9,7 +9,8 @@ class Episode
     public ?string $titre = null;
     public ?string $resume = null;
     public ?int $duree = null;
-    public ?string $video_url = null;
+    public ?string $file = null;
+
 
     public function __toString(): string
     {

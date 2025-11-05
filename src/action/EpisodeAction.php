@@ -28,8 +28,8 @@ class EpisodeAction
         }
 
         // Ajouter le chemin complet à la vidéo
-        if ($ep->video_url && !str_starts_with($ep->video_url, 'videos/')) {
-            $ep->video_url = 'videos/' . $ep->video_url;
+        if ($ep->file && !str_starts_with($ep->file, 'videos/')) {
+            $ep->file = 'videos/' . $ep->file;
         }
 
         $content = EpisodeRenderer::renderDetail($ep);

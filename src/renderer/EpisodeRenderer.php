@@ -66,7 +66,7 @@ HTML;
         $numero = htmlspecialchars((string)($episode->numero ?? 'N/A'));
         $duree = htmlspecialchars((string)($episode->duree ?? 0));
         $resume = htmlspecialchars($episode->resume ?? 'Pas de résumé disponible');
-        $videoPath = $episode->video_url ?? '';
+        $videoPath = $episode->file ?? '';
         $serieId = (string)($episode->id_serie ?? '');
 
         $videoHtml = '';
