@@ -21,9 +21,9 @@ class SerieRepository
             $serie->img = $row['img'] ?? '';
             $serie->annee = (int)($row['annee'] ?? 0);
             $serie->date_ajout = $row['date_ajout'] ?? '';
-            $serie->description = $row['description'] ?? null;
+            $serie->descriptif = $row['descriptif'] ?? null;
             $serie->genre = $row['genre'] ?? null;
-            $serie->image_url = $row['image_url'] ?? null;
+            $serie->img = $row['img'] ?? null;
             
             $series[] = $serie;
         }
@@ -49,9 +49,9 @@ class SerieRepository
         $serie->img = $row['img'] ?? '';
         $serie->annee = (int)($row['annee'] ?? 0);
         $serie->date_ajout = $row['date_ajout'] ?? '';
-        $serie->description = $row['description'] ?? null;
+        $serie->descriptif = $row['descriptif'] ?? null;
         $serie->genre = $row['genre'] ?? null;
-        $serie->image_url = $row['image_url'] ?? null;
+        $serie->img = $row['img'] ?? null;
         
         return $serie;
     }

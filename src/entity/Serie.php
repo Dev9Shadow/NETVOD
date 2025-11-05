@@ -5,13 +5,12 @@ class Serie
 {
     public int $id;
     public string $titre;
-    public ?string $descriptif = null;  // Nullable
-    public ?string $img = null;         // Nullable
-    public ?int $annee = null;          // Nullable
-    public ?string $date_ajout = null;  // Nullable
-    public ?string $description = null;
+    public ?string $descriptif = null; 
+    public ?string $img = null;        
+    public ?int $annee = null;         
+    public ?string $date_ajout = null; 
     public ?string $genre = null;
-    public ?string $image_url = null;
+
 
     public function __toString(): string
     {

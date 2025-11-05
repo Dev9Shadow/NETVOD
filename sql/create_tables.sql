@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS user (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     nom VARCHAR(100) DEFAULT '',
-    prenom VARCHAR(100) DEFAULT '',
+    prenom VARCHAR(100) DEFAULT ''
 );
 
 -- ---------------------------------------------------------
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS serie (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
+    descriptif TEXT NOT NULL,
     genre VARCHAR(100) DEFAULT '',
     annee INT NOT NULL,
     image_url VARCHAR(255) DEFAULT NULL
