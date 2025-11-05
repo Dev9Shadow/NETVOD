@@ -31,8 +31,8 @@ class UserRepository
     {
         $pdo = ConnectionFactory::getConnection();
         $stmt = $pdo->prepare(
-            "INSERT INTO user (email, password_hash, nom, prenom, created_at, is_active) 
-             VALUES (?, ?, ?, ?, NOW(), 1)"
+            "INSERT INTO user (email, password_hash, nom, prenom) 
+             VALUES (?, ?, ?, ?)"
         );
         
         return $stmt->execute([
