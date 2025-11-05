@@ -34,7 +34,8 @@ CREATE TABLE IF NOT EXISTS serie (
     descriptif TEXT NOT NULL,
     genre VARCHAR(100) DEFAULT '',
     annee INT NOT NULL,
-    image_url VARCHAR(255) DEFAULT NULL
+    img VARCHAR(255) DEFAULT NULL,
+    date_ajout DATE,
 );
 
 -- ---------------------------------------------------------
