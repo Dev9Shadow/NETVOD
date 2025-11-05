@@ -23,8 +23,6 @@ class UserRepository
         $user->password_hash = $row['password_hash'];
         $user->nom = $row['nom'] ?? '';
         $user->prenom = $row['prenom'] ?? '';
-        $user->created_at = $row['created_at'] ?? null;
-        $user->is_active = (bool)($row['is_active'] ?? 1);
         
         return $user;
     }
@@ -62,8 +60,6 @@ class UserRepository
         $user->password_hash = $row['password_hash'];
         $user->nom = $row['nom'] ?? '';
         $user->prenom = $row['prenom'] ?? '';
-        $user->created_at = $row['created_at'] ?? null;
-        $user->is_active = (bool)($row['is_active'] ?? 1);
         
         return $user;
     }

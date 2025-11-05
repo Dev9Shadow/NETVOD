@@ -29,3 +29,8 @@ INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`) 
 (4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'',	2021,	'2022-11-04'),
 (5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'',	2022,	'2022-11-03'),
 (6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'',	2017,	'2022-10-31');
+
+
+ALTER TABLE user 
+DROP COLUMN created_at,
+DROP COLUMN is_active;
