@@ -26,8 +26,25 @@ class RegisterAction
                 $errors[] = "Email invalide.";
             }
             
-            if (empty($password) || strlen($password) < 6) {
-                $errors[] = "Le mot de passe doit contenir au moins 6 caractères.";
+            // Validation du mot de passe sécurisé
+            if (empty($password)) {
+                $errors[] = "Le mot de passe est obligatoire.";
+            } else {
+                if (strlen($password) < 8) {
+                    $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
+                }
+                if (!preg_match('/[a-z]/', $password)) {
+                    $errors[] = "Le mot de passe doit contenir au moins une minuscule.";
+                }
+                if (!preg_match('/[A-Z]/', $password)) {
+                    $errors[] = "Le mot de passe doit contenir au moins une majuscule.";
+                }
+                if (!preg_match('/[0-9]/', $password)) {
+                    $errors[] = "Le mot de passe doit contenir au moins un chiffre.";
+                }
+                if (!preg_match('/[@#$%^&*()!,.?]/', $password)) {
+                    $errors[] = "Le mot de passe doit contenir au moins un caractère spécial (!@#$%^&*...)";
+                }
             }
             
             if ($password !== $password_confirm) {
@@ -65,16 +82,16 @@ class RegisterAction
         $html = "<h1>Inscription</h1>";
         
         if (!empty($errors)) {
-            $html .= "<div class='error'>";
+            $html .= "<div class='error' style='background: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px; margin-bottom: 20px;'>";
             foreach ($errors as $error) {
-                $html .= "<p>{$error}</p>";
+                $html .= "<p style='margin: 5px 0;'>{$error}</p>";
             }
             $html .= "</div>";
         }
         
         if (isset($success)) {
-            $html .= "<div class='success'>
-                        <p>{$success}</p>
+            $html .= "<div class='success' style='background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-bottom: 20px;'>
+                        <p style='margin: 0;'>{$success}</p>
                       </div>";
             $html .= "<p style='text-align: center; margin-top: 20px;'>
                         <a href='index.php?action=login' class='btn' style='display: inline-block; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;'>
@@ -102,11 +119,11 @@ class RegisterAction
                     </div>
                     <div>
                         <label>Mot de passe :</label>
-                        <input type='password' name='password' required minlength='6'>
+                        <input type='password' name='password' required minlength='8'>
                     </div>
                     <div>
                         <label>Confirmer le mot de passe :</label>
-                        <input type='password' name='password_confirm' required minlength='6'>
+                        <input type='password' name='password_confirm' required minlength='8'>
                     </div>
                     <button type='submit'>S'inscrire</button>
                 </form>
