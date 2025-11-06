@@ -7,7 +7,6 @@ class TestdbAction
 {
     public function execute(): string
     {
-        // chemin relatif correct (marche maintenant que le nom du fichier est bon)
         $path = __DIR__ . '/../../config/db.config.ini';
         ConnectionFactory::setConfig($path);
 
