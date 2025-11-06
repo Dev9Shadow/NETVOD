@@ -4,6 +4,7 @@ namespace netvod\action;
 use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
+use netvod\util\PasswordValidator;
 
 class ProfileAction
 {
@@ -23,7 +24,6 @@ class ProfileAction
         $repo = new UserRepository();
         $user = $repo->findById((int)$_SESSION['user_id']);
         if (!$user) {
-            // session invalide
             header('Location: index.php?action=login');
             exit;
         }
@@ -43,13 +43,11 @@ class ProfileAction
                 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $infoError = "Adresse email invalide.";
                 } else {
-                    // Vérifier l'unicité de l'email (autre utilisateur)
                     $other = $repo->findByEmail($email);
                     if ($other && $other->id !== $user->id) {
                         $infoError = "Cet email est déjà utilisé.";
                     } else {
                         if ($repo->updateInfo($user->id, $email, $nom, $prenom)) {
-                            // Mettre à jour les données locales/session
                             $user = $repo->findById($user->id) ?? $user;
                             $_SESSION['user_email'] = $user->email;
                             $_SESSION['user_nom'] = $user->nom;
@@ -68,27 +66,28 @@ class ProfileAction
                 if ($new === '' || $confirm === '' || $current === '') {
                     $pwdError = "Veuillez remplir tous les champs.";
                 } elseif ($new !== $confirm) {
-                    $pwdError = "La confirmation ne correspond pas.";
-                } elseif (strlen($new) < 6) {
-                    $pwdError = "Le nouveau mot de passe doit contenir au moins 6 caractères.";
+                    $pwdError = "Les mots de passe ne correspondent pas.";
                 } else {
-                    // Recharger l'utilisateur pour le mot de passe
-                    $fresh = $repo->findById($user->id);
-                    if (!$fresh || !password_verify($current, (string)$fresh->password_hash)) {
-                        $pwdError = "Mot de passe actuel incorrect.";
+                    $policyErrors = PasswordValidator::validate($new);
+                    if (!empty($policyErrors)) {
+                        $pwdError = implode(' ', $policyErrors);
                     } else {
-                        $hash = password_hash($new, PASSWORD_DEFAULT);
-                        if ($repo->updatePassword($user->id, $hash)) {
-                            $pwdSuccess = "Mot de passe mis à jour.";
+                        $fresh = $repo->findById($user->id);
+                        if (!$fresh || !password_verify($current, (string)$fresh->password_hash)) {
+                            $pwdError = "Mot de passe actuel incorrect.";
                         } else {
-                            $pwdError = "Échec de la mise à jour du mot de passe.";
+                            $hash = password_hash($new, PASSWORD_DEFAULT);
+                            if ($repo->updatePassword($user->id, $hash)) {
+                                $pwdSuccess = "Mot de passe mis à jour.";
+                            } else {
+                                $pwdError = "Échec de la mise à jour du mot de passe.";
+                            }
                         }
                     }
                 }
             }
         }
 
-        // Formulaire profil
         $html = "<h1>Mon profil</h1>";
 
         if ($infoError) {
@@ -138,11 +137,11 @@ class ProfileAction
                 </div>
                 <div>
                     <label>Nouveau mot de passe</label>
-                    <input type='password' name='new_password' minlength='6' required>
+                    <input type='password' name='new_password' minlength='8' required>
                 </div>
                 <div>
                     <label>Confirmer le nouveau mot de passe</label>
-                    <input type='password' name='confirm_password' minlength='6' required>
+                    <input type='password' name='confirm_password' minlength='8' required>
                 </div>
                 <button type='submit'>Mettre à jour</button>
             </form>
@@ -159,3 +158,4 @@ class ProfileAction
         return Layout::render($html, 'Mon profil - NETVOD');
     }
 }
+
