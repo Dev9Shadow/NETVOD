@@ -1,4 +1,3 @@
-
 SET NAMES utf8mb4;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
@@ -12,6 +11,7 @@ DROP TABLE IF EXISTS progress;
 DROP TABLE IF EXISTS favorite;
 DROP TABLE IF EXISTS episode;
 DROP TABLE IF EXISTS serie;
+DROP TABLE IF EXISTS public_cible;
 DROP TABLE IF EXISTS user;
 
 -- ---------------------------------------------------------
@@ -26,6 +26,14 @@ CREATE TABLE IF NOT EXISTS user (
 );
 
 -- ---------------------------------------------------------
+-- Table : public_cible
+-- ---------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public_cible (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(64) NOT NULL UNIQUE
+);
+
+-- ---------------------------------------------------------
 -- Table : serie
 -- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS serie (
@@ -35,7 +43,11 @@ CREATE TABLE IF NOT EXISTS serie (
     genre VARCHAR(100) DEFAULT '',
     annee INT NOT NULL,
     img VARCHAR(255) DEFAULT NULL,
-    date_ajout DATE
+    date_ajout DATE,
+    id_public_cible INT DEFAULT NULL,
+    CONSTRAINT fk_serie_public_cible
+        FOREIGN KEY (id_public_cible)
+        REFERENCES public_cible(id)
 );
 
 -- ---------------------------------------------------------
@@ -116,15 +128,3 @@ CREATE TABLE IF NOT EXISTS comment (
 );
 
 SET foreign_key_checks = 1;
-
-
-
--- Table public_cible (référentiel)
-CREATE TABLE IF NOT EXISTS public_cible (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(64) NOT NULL UNIQUE
-);
-
--- Ajouter la clé étrangère dans la table serie
-ALTER TABLE serie ADD COLUMN id_public_cible INT DEFAULT NULL;
-ALTER TABLE serie ADD FOREIGN KEY (id_public_cible) REFERENCES public_cible(id);
