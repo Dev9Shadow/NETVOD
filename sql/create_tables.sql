@@ -123,7 +123,7 @@ SET foreign_key_checks = 1;
 CREATE TABLE IF NOT EXISTS public_cible (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(64) NOT NULL UNIQUE
-)
+);
 
 -- Ajouter la clé étrangère dans la table serie
 ALTER TABLE serie ADD COLUMN id_public_cible INT DEFAULT NULL;
