@@ -27,22 +27,65 @@ class SerieAction
         // Récupérer les épisodes
         $episodeRepo = new EpisodeRepository();
         $episodes = $episodeRepo->findBySerie($serie->id);
+        $nbEpisodes = count($episodes);
         
-        // Construire le HTML
+        // Préparer les données
+        $titre = htmlspecialchars($serie->titre);
         $descriptif = $serie->descriptif ?? 'Pas de description disponible';
+        $genre = $serie->genre ?? 'Non spécifié';
+        $publicVise = $serie->publicCible ? htmlspecialchars($serie->publicCible->nom) : 'Non spécifié';
         $annee = $serie->annee ?? 'N/A';
-        $dateAjout = $serie->date_ajout ?? '';
+        $dateAjout = $serie->date_ajout ? date('d/m/Y', strtotime($serie->date_ajout)) : 'N/A';
+        $imgName = $serie->img ?? 'default.jpg';
+        $imgPath = 'images/' . $imgName;
         
-        $html = "<div class='card' style='margin-bottom: 30px;'>
-                    <h1>" . htmlspecialchars($serie->titre) . "</h1>
-                    <p>" . htmlspecialchars($descriptif) . "</p>
-                    <small>Année : {$annee} | Ajoutée le : {$dateAjout}</small>
+        // Construire le HTML - Header avec image
+        $html = "<div class='serie-detail-header'>
+                    <div class='serie-detail-poster'>
+                        <img src='{$imgPath}' alt='{$titre}' onerror=\"this.src='images/default.jpg'\">
+                    </div>
+                    <div class='serie-detail-info'>
+                        <h1>{$titre}</h1>
+                        
+                        <div class='serie-meta'>
+                            <span class='badge'>{$genre}</span>
+                            <span class='badge'>{$publicVise}</span>
+                            <span class='badge'>{$annee}</span>
+                            <span class='badge'>{$nbEpisodes} épisode" . ($nbEpisodes > 1 ? 's' : '') . "</span>
+                        </div>
+                        
+                        <div class='serie-description'>
+                            <h3>Synopsis</h3>
+                            <p>" . nl2br(htmlspecialchars($descriptif)) . "</p>
+                        </div>
+                        
+                        <div class='serie-stats'>
+                            <div class='stat-item'>
+                                <strong>Année de sortie</strong>
+                                <span>{$annee}</span>
+                            </div>
+                            <div class='stat-item'>
+                                <strong>Genre</strong>
+                                <span>{$genre}</span>
+                            </div>
+                            <div class='stat-item'>
+                                <strong>Public visé</strong>
+                                <span>{$publicVise}</span>
+                            </div>
+                            <div class='stat-item'>
+                                <strong>Ajoutée le</strong>
+                                <span>{$dateAjout}</span>
+                            </div>
+                        </div>
+                    </div>
                  </div>";
         
-        $html .= "<h2>Épisodes</h2>";
+        // Liste des épisodes
+        $html .= "<div class='episodes-section'>
+                    <h2>Épisodes <span class='episodes-count'>({$nbEpisodes})</span></h2>";
         
         if (empty($episodes)) {
-            $html .= "<p>Aucun épisode disponible pour cette série.</p>";
+            $html .= "<p class='no-episodes'>Aucun épisode disponible pour cette série.</p>";
         } else {
             $html .= "<div class='episode-list'>";
             foreach ($episodes as $ep) {
@@ -52,18 +95,24 @@ class SerieAction
                 $numero = $ep->numero ?? '?';
                 
                 $html .= "<div class='episode-item'>
-                            <h4>Épisode {$numero} : {$titre}</h4>
-                            <p>{$resume}</p>
-                            <small>Durée : {$duree} min</small>
-                            <br>
-                            <a href='index.php?action=episode&id={$ep->id}' class='btn' style='margin-top: 10px; display: inline-block;'>▶ Voir</a>
+                            <div class='episode-number'>{$numero}</div>
+                            <div class='episode-content'>
+                                <h4>{$titre}</h4>
+                                <p class='episode-resume'>{$resume}</p>
+                                <small class='episode-duration'>{$duree} min</small>
+                            </div>
+                            <div class='episode-actions'>
+                                <a href='index.php?action=episode&id={$ep->id}' class='btn btn-play'>▶ Lire</a>
+                            </div>
                           </div>";
             }
             $html .= "</div>";
         }
         
-        $html .= "<p style='margin-top: 30px;'><a href='index.php?action=catalogue'>⬅ Retour au catalogue</a></p>";
+        $html .= "</div>";
         
-        return Layout::render($html, htmlspecialchars($serie->titre) . " - NETVOD");
+        $html .= "<p style='margin-top: 30px;'><a href='index.php?action=catalogue' class='btn btn-secondary'>⬅ Retour au catalogue</a></p>";
+        
+        return Layout::render($html, $titre . " - NETVOD");
     }
 }

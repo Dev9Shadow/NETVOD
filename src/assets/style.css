@@ -109,9 +109,6 @@ a:hover {
     margin: 0;
 }
 
-/* Cartes de séries/épisodes */
-
-
 /* Carte série avec image */
 .serie-poster {
     width: 100%;
@@ -129,7 +126,6 @@ a:hover {
     object-position: center;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
-
 
 .card {
     background-color: #1f1f1f;
@@ -190,6 +186,185 @@ a:hover {
 }
 
 .hero .btn:hover {
+    background-color: #f40612;
+    transform: scale(1.05);
+}
+
+/* Détails de série */
+.serie-detail-header {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+.serie-detail-poster {
+    width: 100%;
+    height: 550px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+}
+
+.serie-detail-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.serie-detail-info h1 {
+    margin-bottom: 20px;
+}
+
+.serie-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.serie-meta .badge {
+    background-color: #333;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.serie-description {
+    background-color: #1f1f1f;
+    padding: 25px;
+    border-radius: 8px;
+    border-left: 4px solid #e50914;
+    margin-bottom: 30px;
+}
+
+.serie-description h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.serie-description p {
+    color: #b3b3b3;
+    line-height: 1.8;
+    margin: 0;
+}
+
+.serie-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.stat-item {
+    background-color: #1f1f1f;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.stat-item strong {
+    display: block;
+    color: #e50914;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.stat-item span {
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+/* Section épisodes */
+.episodes-section {
+    margin-top: 50px;
+}
+
+.episodes-section h2 {
+    margin-bottom: 30px;
+}
+
+.episodes-count {
+    color: #b3b3b3;
+    font-weight: normal;
+    font-size: 1.4rem;
+}
+
+.no-episodes {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+}
+
+/* Liste d'épisodes */
+.episode-list {
+    margin-top: 30px;
+}
+
+.episode-item {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 20px;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.episode-item:hover {
+    background-color: #2a2a2a;
+    border-color: #e50914;
+    transform: translateX(5px);
+}
+
+.episode-number {
+    width: 50px;
+    height: 50px;
+    background-color: #e50914;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.episode-content h4 {
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.episode-resume {
+    color: #b3b3b3;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.episode-duration {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.episode-actions .btn-play {
+    background-color: #e50914;
+    padding: 10px 25px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.episode-actions .btn-play:hover {
     background-color: #f40612;
     transform: scale(1.05);
 }
@@ -292,24 +467,6 @@ button:active,
     border-left: 4px solid #28a745;
 }
 
-/* Liste d'épisodes */
-.episode-list {
-    margin-top: 30px;
-}
-
-.episode-item {
-    background-color: #1f1f1f;
-    border-left: 4px solid #e50914;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
-}
-
-.episode-item:hover {
-    background-color: #2a2a2a;
-}
-
 /* Texte */
 small {
     color: #999;
@@ -345,6 +502,17 @@ footer {
     }
 }
 
+@media (max-width: 1024px) {
+    .serie-detail-header {
+        grid-template-columns: 300px 1fr;
+        gap: 30px;
+    }
+    
+    .serie-detail-poster {
+        height: 450px;
+    }
+}
+
 @media (max-width: 768px) {
     h1 {
         font-size: 1.8rem;
@@ -366,5 +534,27 @@ footer {
     
     .container {
         padding: 20px;
+    }
+    
+    .serie-detail-header {
+        grid-template-columns: 1fr;
+    }
+    
+    .serie-detail-poster {
+        height: 400px;
+    }
+    
+    .serie-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .episode-item {
+        grid-template-columns: 50px 1fr;
+        gap: 15px;
+    }
+    
+    .episode-actions {
+        grid-column: 2;
+        margin-top: 10px;
     }
 }

@@ -116,3 +116,15 @@ CREATE TABLE IF NOT EXISTS comment (
 );
 
 SET foreign_key_checks = 1;
+
+
+
+-- Table public_cible (référentiel)
+CREATE TABLE IF NOT EXISTS public_cible (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(64) NOT NULL UNIQUE
+)
+
+-- Ajouter la clé étrangère dans la table serie
+ALTER TABLE serie ADD COLUMN id_public_cible INT DEFAULT NULL;
+ALTER TABLE serie ADD FOREIGN KEY (id_public_cible) REFERENCES public_cible(id);

@@ -2,6 +2,7 @@
 namespace netvod\repository;
 
 use netvod\entity\Serie;
+use netvod\entity\PublicCible;
 use PDO;
 
 class SerieRepository
@@ -9,7 +10,9 @@ class SerieRepository
     public function findAll(): array
     {
         $pdo = ConnectionFactory::getConnection();
-        $query = "SELECT * FROM serie";
+        $query = "SELECT s.*, pc.nom as public_nom 
+                  FROM serie s 
+                  LEFT JOIN public_cible pc ON s.id_public_cible = pc.id";
         $stmt = $pdo->query($query);
         
         $series = [];
@@ -17,13 +20,20 @@ class SerieRepository
             $serie = new Serie();
             $serie->id = (int)$row['id'];
             $serie->titre = $row['titre'];
-            $serie->descriptif = $row['descriptif'] ?? '';
-            $serie->img = $row['img'] ?? '';
-            $serie->annee = (int)($row['annee'] ?? 0);
-            $serie->date_ajout = $row['date_ajout'] ?? '';
             $serie->descriptif = $row['descriptif'] ?? null;
-            $serie->genre = $row['genre'] ?? null;
             $serie->img = $row['img'] ?? null;
+            $serie->annee = isset($row['annee']) ? (int)$row['annee'] : null;
+            $serie->date_ajout = $row['date_ajout'] ?? null;
+            $serie->genre = $row['genre'] ?? null;
+            $serie->id_public_cible = isset($row['id_public_cible']) ? (int)$row['id_public_cible'] : null;
+            
+            // Charger le public cible si existe
+            if ($row['public_nom']) {
+                $public = new PublicCible();
+                $public->id = $serie->id_public_cible;
+                $public->nom = $row['public_nom'];
+                $serie->publicCible = $public;
+            }
             
             $series[] = $serie;
         }
@@ -34,7 +44,10 @@ class SerieRepository
     public function findById(int $id): ?Serie
     {
         $pdo = ConnectionFactory::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM serie WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT s.*, pc.nom as public_nom 
+                               FROM serie s 
+                               LEFT JOIN public_cible pc ON s.id_public_cible = pc.id 
+                               WHERE s.id = ?");
         $stmt->execute([$id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         
@@ -45,14 +58,30 @@ class SerieRepository
         $serie = new Serie();
         $serie->id = (int)$row['id'];
         $serie->titre = $row['titre'];
-        $serie->descriptif = $row['descriptif'] ?? '';
-        $serie->img = $row['img'] ?? '';
-        $serie->annee = (int)($row['annee'] ?? 0);
-        $serie->date_ajout = $row['date_ajout'] ?? '';
         $serie->descriptif = $row['descriptif'] ?? null;
-        $serie->genre = $row['genre'] ?? null;
         $serie->img = $row['img'] ?? null;
+        $serie->annee = isset($row['annee']) ? (int)$row['annee'] : null;
+        $serie->date_ajout = $row['date_ajout'] ?? null;
+        $serie->genre = $row['genre'] ?? null;
+        $serie->id_public_cible = isset($row['id_public_cible']) ? (int)$row['id_public_cible'] : null;
+        
+        // Charger le public cible si existe
+        if ($row['public_nom']) {
+            $public = new PublicCible();
+            $public->id = $serie->id_public_cible;
+            $public->nom = $row['public_nom'];
+            $serie->publicCible = $public;
+        }
         
         return $serie;
+    }
+
+    public function countEpisodes(int $serieId): int
+    {
+        $pdo = ConnectionFactory::getConnection();
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM episode WHERE id_serie = ?");
+        $stmt->execute([$serieId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
     }
 }

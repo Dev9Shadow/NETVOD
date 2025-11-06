@@ -28,3 +28,19 @@ INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `id_s
 (19,	3,	'surf amitié',	'En fait la planche n\'avait pas été volée, c\'est Jim, le meilleur ami de Jack, qui lui avait fait une blague. Les deux amis partagent une menthe à l\'eau pour célébrer leur amitié sans faille.',	11,	'surf.mp4',	5),
 (20,	1,	'Ça roule, ça roule',	'Ça roule, ça roule toute la nuit. Jack fonce dans sa camionnette pour rejoindre le spot de surf.',	27,	'cars-by-night.mp4',	6),
 (21,	2,	'Ça roule, ça roule toujours',	'Ça roule la nuit, comme chaque nuit. Jim fonce avec son taxi, pour rejoindre Jack à la plage. De l\'eau a coulé sous les ponts. Le mystère du Lac trouve sa solution alors que les chevaux sont de retour après une virée sur l\'Etoile Noire.',	27,	'cars-by-night.mp4',	6);
+
+
+
+
+INSERT INTO public_cible (nom) VALUES 
+    ('Tout public'),
+    ('6+'),
+    ('10+'),
+    ('12+'),
+    ('16+'),
+    ('18+');
+
+
+UPDATE serie SET id_public_cible = 1 WHERE id IN (1, 3, 4); -- Tout public
+UPDATE serie SET id_public_cible = 4 WHERE id = 2;          -- 12+
+UPDATE serie SET id_public_cible = 5 WHERE id = 5;          -- 16+
