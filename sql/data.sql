@@ -1,10 +1,10 @@
-INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`) VALUES
-(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'lac.jpg',	2020,	'2022-10-30'),
-(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'eau.jpg',	1907,	'2022-10-29'),
-(3,	'Chevaux fous',	'Une série sur la vie des chevals sauvages en liberté. Décoiffante.',	'cheval.jpg',	2017,	'2022-10-31'),
-(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'plage.jpg',	2021,	'2022-11-04'),
-(5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'surf.jpg',	2022,	'2022-11-03'),
-(6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'ville.jpg',	2017,	'2022-10-31');
+INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`,`genre`) VALUES
+(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'lac.jpg',	2020,	'2022-10-30','Fantastique'),
+(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'eau.jpg',	1907,	'2022-10-29','Aventure'),
+(3,	'Chevaux fous',	'Une série sur la vie des chevaux sauvages en liberté. Décoiffante.',	'cheval.jpg',	2017,	'2022-10-31','Western'),
+(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'plage.jpg',	2021,	'2022-11-04','Comedie'),
+(5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'surf.jpg',	2022,	'2022-11-03','Sport'),
+(6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'ville.jpg',	2017,	'2022-10-31','Drame');
 
 INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `id_serie`) VALUES
 (1,	1,	'Le lac',	'Le lac se révolte ',	8,	'lake.mp4',	1),
@@ -43,4 +43,4 @@ INSERT INTO public_cible (nom) VALUES
 
 UPDATE serie SET id_public_cible = 1 WHERE id IN (1, 3, 4); -- Tout public
 UPDATE serie SET id_public_cible = 4 WHERE id = 2;          -- 12+
-UPDATE serie SET id_public_cible = 5 WHERE id = 5;          -- 16+
+UPDATE serie SET id_public_cible = 5 WHERE id IN  (5, 6);          -- 16+
