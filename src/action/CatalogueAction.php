@@ -27,10 +27,19 @@ class CatalogueAction
                 $descriptif = $s->descriptif ?? 'Pas de description disponible';
                 $annee = $s->annee ?? 'N/A';
                 
-                $html .= "<div class='card'>
-                            <h3><a href='index.php?action=serie&id={$s->id}'>" . htmlspecialchars($s->titre) . "</a></h3>
-                            <p>" . htmlspecialchars($descriptif) . "</p>
-                            <small>Année : {$annee}</small>
+                // Construire le chemin de l'image à partir du nom du fichier
+                $imgName = $s->img ?? 'default.jpg';
+                $imgPath = 'images/' . $imgName;
+                
+                $html .= "<div class='card serie-card'>
+                            <div class='serie-poster'>
+                                <img src='{$imgPath}' alt='" . htmlspecialchars($s->titre) . "' onerror=\"this.src='images/default.jpg'\">
+                            </div>
+                            <div class='serie-info'>
+                                <h3><a href='index.php?action=serie&id={$s->id}'>" . htmlspecialchars($s->titre) . "</a></h3>
+                                <p>" . htmlspecialchars($descriptif) . "</p>
+                                <small>Année : {$annee}</small>
+                            </div>
                           </div>";
             }
             $html .= "</div>";
