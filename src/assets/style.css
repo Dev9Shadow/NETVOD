@@ -506,23 +506,33 @@ button:active,
     border-left: 4px solid #28a745;
 }
 
-/* Page favoris vide */
-.no-favorites {
+/* Section favoris sur la page d'accueil */
+.favorites-section {
+    margin-top: 50px;
+    padding-top: 40px;
+    border-top: 2px solid #333;
+}
+
+.favorites-section h2 {
+    margin-bottom: 30px;
+}
+
+.no-favorites-home {
     text-align: center;
-    padding: 60px 20px;
-    background-color: #1f1f1f;
-    border-radius: 8px;
-    margin: 40px 0;
+    padding: 60px 40px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border-radius: 12px;
+    border: 2px dashed #333;
 }
 
-.no-favorites p {
-    font-size: 1.1rem;
+.no-favorites-home p {
     color: #b3b3b3;
-    margin-bottom: 20px;
+    font-size: 1.2rem;
+    margin-bottom: 25px;
 }
 
-.no-favorites .btn {
-    margin-top: 20px;
+.no-favorites-home .btn {
+    margin-top: 10px;
 }
 
 /* Texte */
