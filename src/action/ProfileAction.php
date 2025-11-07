@@ -90,15 +90,26 @@ class ProfileAction
 
         $html = "<h1>Mon profil</h1>";
 
+        // Messages globaux
         if ($infoError) {
             $html .= "<p class='error'>" . htmlspecialchars($infoError) . "</p>";
         }
         if ($infoSuccess) {
             $html .= "<p class='success'>" . htmlspecialchars($infoSuccess) . "</p>";
         }
+        if ($pwdError) {
+            $html .= "<p class='error'>" . htmlspecialchars($pwdError) . "</p>";
+        }
+        if ($pwdSuccess) {
+            $html .= "<p class='success'>" . htmlspecialchars($pwdSuccess) . "</p>";
+        }
 
+        // Container 2 colonnes
+        $html .= "<div class='profile-container'>";
+
+        // Colonne gauche - Informations personnelles
         $html .= "
-        <section class='card'>
+        <div class='profile-section'>
             <h2>Informations personnelles</h2>
             <form method='POST'>
                 <input type='hidden' name='form_type' value='info'>
@@ -116,18 +127,12 @@ class ProfileAction
                 </div>
                 <button type='submit'>Enregistrer</button>
             </form>
-        </section>
+        </div>
         ";
 
-        if ($pwdError) {
-            $html .= "<p class='error'>" . htmlspecialchars($pwdError) . "</p>";
-        }
-        if ($pwdSuccess) {
-            $html .= "<p class='success'>" . htmlspecialchars($pwdSuccess) . "</p>";
-        }
-
+        // Colonne droite - Mot de passe
         $html .= "
-        <section class='card'>
+        <div class='profile-section'>
             <h2>Changer le mot de passe</h2>
             <form method='POST'>
                 <input type='hidden' name='form_type' value='password'>
@@ -145,11 +150,14 @@ class ProfileAction
                 </div>
                 <button type='submit'>Mettre à jour</button>
             </form>
-        </section>
+        </div>
         ";
 
+        $html .= "</div>"; // Fin profile-container
+
+        // Section déconnexion en dessous
         $html .= "
-        <section class='card' style='border-color:#c0392b;'>
+        <section class='profile-section' style='margin-top: 40px; border-color:#e50914;'>
             <h2>Session</h2>
             <p><a class='btn' href='index.php?action=logout'>Se déconnecter</a></p>
         </section>
@@ -158,4 +166,3 @@ class ProfileAction
         return Layout::render($html, 'Mon profil - NETVOD');
     }
 }
-

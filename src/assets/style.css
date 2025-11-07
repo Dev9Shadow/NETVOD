@@ -224,6 +224,34 @@ a:hover {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+/* Page profil - 2 colonnes */
+.profile-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-section {
+    background-color: #1f1f1f;
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.profile-section h2 {
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+    .profile-container {
+        grid-template-columns: 1fr;
+    }
+}
+
 .hero .btn:hover {
     background-color: #f40612;
     transform: scale(1.05);
