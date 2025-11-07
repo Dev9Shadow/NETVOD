@@ -19,6 +19,10 @@ class Dispatcher
 
         if (!AuthnProvided::isAuthenticated()) {
             if ($actionName !== 'login' && $actionName !== 'register') {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['flash_error'] = 'Veuillez vous connecter pour continuer';
                 header('Location: index.php?action=login');
                 return;
             }

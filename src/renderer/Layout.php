@@ -33,6 +33,7 @@ class Layout
         </div>
     </nav>
     <div class='container'>
+        " . self::renderFlash() . "
         {$content}
     </div>
     <footer>
@@ -56,7 +57,28 @@ class Layout
         return "<a href='index.php?action=login'>Connexion</a>
                 <a href='index.php?action=register'>Inscription</a>";
     }
+        private static function renderFlash(): string
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
 
+        $html = '';
+
+        if (!empty($_SESSION['flash_error'])) {
+            $msg = htmlspecialchars((string)$_SESSION['flash_error']);
+            unset($_SESSION['flash_error']);
+            $html .= "<div class='error'>{$msg}</div>";
+        }
+
+        if (!empty($_SESSION['flash_success'])) {
+            $msg = htmlspecialchars((string)$_SESSION['flash_success']);
+            unset($_SESSION['flash_success']);
+            $html .= "<div class='success'>{$msg}</div>";
+        }
+
+        return $html;
+    }
     private static function getJavaScript(): string
     {
         return <<<'JS'
