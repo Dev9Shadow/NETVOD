@@ -127,4 +127,15 @@ CREATE TABLE IF NOT EXISTS comment (
         ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS episode_vue (
+  id_user INT NOT NULL,
+  id_episode INT NOT NULL,
+  position_sec INT NOT NULL DEFAULT 0,
+  vu TINYINT(1) NOT NULL DEFAULT 0,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_user, id_episode),
+  CONSTRAINT fk_ev_user    FOREIGN KEY (id_user)    REFERENCES user(id)    ON DELETE CASCADE,
+  CONSTRAINT fk_ev_episode FOREIGN KEY (id_episode) REFERENCES episode(id) ON DELETE CASCADE
+);
+
 SET foreign_key_checks = 1;
