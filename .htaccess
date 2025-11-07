@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^sql(/.*)?$ - [NC,F]
+RewriteRule \.ini$ - [NC,F]
+RewriteRule ^src(/.*)?$ - [NC,F]
