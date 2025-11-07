@@ -27,7 +27,7 @@ class FavorisAction
         $repo = new FavoriRepository();
         $favoris = $repo->getUserFavorites((int)$_SESSION['user_id']);
 
-        $html = "<h1>Mes Favoris ❤️</h1>";
+        $html = "<h1>Mes Favoris</h1>";
 
         if (empty($favoris)) {
             $html .= "<div class='no-favorites'>
