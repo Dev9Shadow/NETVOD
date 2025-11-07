@@ -127,6 +127,45 @@ a:hover {
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
+/* Bouton favori */
+.favori-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 100%;
+    width: 55px;
+    height: 55px;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+}
+
+.favori-btn:hover {
+    background-color: rgba(229, 9, 20, 0.9);
+    transform: scale(1.1);
+}
+
+.favori-btn .heart-icon {
+    font-size: 1.5rem;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+.favori-btn.active .heart-icon {
+    filter: grayscale(0%);
+}
+
+.favori-btn:hover .heart-icon {
+    filter: grayscale(0%);
+}
+
 .card {
     background-color: #1f1f1f;
     border: 1px solid #333;
@@ -465,6 +504,25 @@ button:active,
     border-radius: 4px;
     margin-bottom: 20px;
     border-left: 4px solid #28a745;
+}
+
+/* Page favoris vide */
+.no-favorites {
+    text-align: center;
+    padding: 60px 20px;
+    background-color: #1f1f1f;
+    border-radius: 8px;
+    margin: 40px 0;
+}
+
+.no-favorites p {
+    font-size: 1.1rem;
+    color: #b3b3b3;
+    margin-bottom: 20px;
+}
+
+.no-favorites .btn {
+    margin-top: 20px;
 }
 
 /* Texte */

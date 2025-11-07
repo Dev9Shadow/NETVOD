@@ -3,20 +3,29 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\SerieRepository;
+use netvod\repository\FavoriRepository;
 use netvod\renderer\Layout;
 
 class CatalogueAction
 {
     public function execute(): string
     {
-        // init connexion BDD
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
 
-        // récupérer toutes les séries
-        $repo   = new SerieRepository();
+        $repo = new SerieRepository();
         $series = $repo->findAll();
 
-        // construire le HTML (chaque série est cliquable)
+        // Récupérer les IDs des favoris de l'utilisateur connecté
+        $userFavorites = [];
+        if (isset($_SESSION['user_id'])) {
+            $favoriRepo = new FavoriRepository();
+            $userFavorites = $favoriRepo->getUserFavoriteIds((int)$_SESSION['user_id']);
+        }
+
         $html = "<h1>Catalogue des séries</h1>";
 
         if (empty($series)) {
@@ -26,14 +35,26 @@ class CatalogueAction
             foreach ($series as $s) {
                 $descriptif = $s->descriptif ?? 'Pas de description disponible';
                 $annee = $s->annee ?? 'N/A';
-                
-                // Construire le chemin de l'image à partir du nom du fichier
                 $imgName = $s->img ?? 'default.jpg';
                 $imgPath = 'images/' . $imgName;
+                
+                // Vérifier si la série est en favori
+                $isFavorite = in_array($s->id, $userFavorites);
+                $favoriteClass = $isFavorite ? 'active' : '';
+                $favoriteIcon = $isFavorite ? '❤️' : '🤍';
+                $favoriteTitle = $isFavorite ? 'Retirer des favoris' : 'Ajouter aux favoris';
+                
+                $favoriBtn = '';
+                if (isset($_SESSION['user_id'])) {
+                    $favoriBtn = "<button class='favori-btn {$favoriteClass}' data-serie-id='{$s->id}' title='{$favoriteTitle}'>
+                                    <span class='heart-icon'>{$favoriteIcon}</span>
+                                  </button>";
+                }
                 
                 $html .= "<div class='card serie-card'>
                             <div class='serie-poster'>
                                 <img src='{$imgPath}' alt='" . htmlspecialchars($s->titre) . "' onerror=\"this.src='images/default.jpg'\">
+                                {$favoriBtn}
                             </div>
                             <div class='serie-info'>
                                 <h3><a href='index.php?action=serie&id={$s->id}'>" . htmlspecialchars($s->titre) . "</a></h3>

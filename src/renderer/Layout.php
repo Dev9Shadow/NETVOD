@@ -38,6 +38,7 @@ class Layout
     <footer>
         <p>&copy; 2025 NETVOD - Romain, Stéphane, Eliot, Matteo</p>
     </footer>
+    " . self::getJavaScript() . "
 </body>
 </html>";
     }
@@ -48,10 +49,72 @@ class Layout
             session_start();
         }
         if (isset($_SESSION['user_id'])) {
-            return "<a href='index.php?action=profile'>Profil</a>";
+            return "<a href='index.php?action=favoris'>Favoris</a>
+                    <a href='index.php?action=profile'>Profil</a>
+                    <a href='index.php?action=logout'>Déconnexion</a>";
         }
         return "<a href='index.php?action=login'>Connexion</a>
                 <a href='index.php?action=register'>Inscription</a>";
     }
-}
 
+    private static function getJavaScript(): string
+    {
+        return <<<'JS'
+        <script>
+        // Gestion des favoris
+        document.addEventListener('DOMContentLoaded', function() {
+            const favoriBtns = document.querySelectorAll('.favori-btn');
+            
+            favoriBtns.forEach(btn => {
+                btn.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const serieId = this.dataset.serieId;
+                    const heartIcon = this.querySelector('.heart-icon');
+                    
+                    try {
+                        const response = await fetch('index.php?action=toggleFavori', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: 'serie_id=' + serieId
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            if (data.isFavorite) {
+                                this.classList.add('active');
+                                heartIcon.textContent = '❤️';
+                                this.title = 'Retirer des favoris';
+                            } else {
+                                this.classList.remove('active');
+                                heartIcon.textContent = '🤍';
+                                this.title = 'Ajouter aux favoris';
+                                
+                                // Si on est sur la page favoris, retirer la carte
+                                if (window.location.href.includes('action=favoris')) {
+                                    this.closest('.serie-card').remove();
+                                    
+                                    // Vérifier s'il reste des favoris
+                                    if (document.querySelectorAll('.serie-card').length === 0) {
+                                        location.reload();
+                                    }
+                                }
+                            }
+                        } else {
+                            alert(data.message || 'Une erreur est survenue');
+                        }
+                    } catch (error) {
+                        console.error('Erreur:', error);
+                        alert('Une erreur est survenue');
+                    }
+                });
+            });
+        });
+        </script>
+JS;
+    }
+}
