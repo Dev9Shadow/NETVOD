@@ -54,7 +54,7 @@ class SerieAction
             $last  = $pr->get((int)$_SESSION['user_id'], (int)$serie->id); // last_episode_id ou null
             if (!empty($last)) {
                 $lastId = (int)$last;
-                $reprendreBtn = "<p style='margin: 12px 0 0'>
+                $reprendreBtn = "<p style='margin: 30px 0 0'>
                     <a class='btn' href='index.php?action=episode&id={$lastId}'>▶ Reprendre</a>
                 </p>";
             }
@@ -80,12 +80,12 @@ class SerieAction
                     <p>" . nl2br(htmlspecialchars($descriptif)) . "</p>
                 </div>
 
-                {$reprendreBtn}
-
                 <div class='serie-stats' style='margin-top:16px'>
                     <div class='stat-item'><strong>Année de sortie</strong><span>{$annee}</span></div>
                     <div class='stat-item'><strong>Ajoutée le</strong><span>{$dateAjout}</span></div>
                 </div>
+
+                {$reprendreBtn}
             </div>
         </div>";
 
