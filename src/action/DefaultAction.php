@@ -50,7 +50,7 @@ HTML;
                         $imgName = $serie->img ?? 'default.jpg';
                         $imgPath = 'images/' . $imgName;
                         
-                        $content .= "<div class='card serie-card'>
+                        $content .= "<div class='card serie-card' onclick=\"window.location.href='index.php?action=serie&id={$serie->id}'\" style='cursor:pointer;'>
                                         <div class='serie-poster'>
                                             <img src='{$imgPath}' alt='{$titre}' onerror=\"this.src='images/default.jpg'\">
                                             <button class='favori-btn active' data-serie-id='{$serie->id}' title='Retirer des favoris'>
