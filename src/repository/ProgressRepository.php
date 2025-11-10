@@ -39,4 +39,36 @@ class ProgressRepository
         $val = $st->fetchColumn();
         return $val !== false ? (int)$val : null;
     }
+
+    /**
+     * Liste des séries “en cours” pour un utilisateur, avec détails
+     * - s.titre / s.img
+     * - e.id / e.titre / e.numero
+     * - position_sec depuis episode_vue (si dispo)
+     * Triées par progress.updated_at DESC
+     */
+    public function listForUser(int $idUser): array
+    {
+        $pdo = $this->pdo();
+        $sql = "SELECT
+                    p.id_serie,
+                    s.titre AS serie_titre,
+                    s.img   AS serie_img,
+                    p.last_episode_id AS ep_id,
+                    e.titre AS ep_titre,
+                    e.numero AS ep_numero,
+                    COALESCE(ev.position_sec, 0) AS position_sec,
+                    p.updated_at
+                FROM progress p
+                JOIN serie   s ON s.id = p.id_serie
+                LEFT JOIN episode e ON e.id = p.last_episode_id
+                LEFT JOIN episode_vue ev
+                       ON ev.id_user = p.id_user
+                      AND ev.id_episode = p.last_episode_id
+                WHERE p.id_user = :u
+                ORDER BY p.updated_at DESC";
+        $st = $pdo->prepare($sql);
+        $st->execute([':u' => $idUser]);
+        return $st->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
 }
