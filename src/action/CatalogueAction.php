@@ -70,16 +70,7 @@ class CatalogueAction
                       </p>";
         }
 
-        if (empty($series)) {
-            if ($isSearching) {
-                $html .= "<div class='no-results'>
-                            <p>Aucune série trouvée pour « <strong>{$searchValue}</strong> »</p>
-                            <p><a href='index.php?action=catalogue' class='btn btn-secondary'>Voir toutes les séries</a></p>
-                          </div>";
-            } else {
-                $html .= "<p>Aucune série en base.</p>";
-            }
-        } else {
+        if (!empty($series)) {
             $html .= "<div class='series-grid'>";
             foreach ($series as $s) {
                 $descriptif = $s->descriptif ?? 'Pas de description disponible';
