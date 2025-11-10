@@ -17,7 +17,19 @@ class CatalogueAction
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
 
         $repo = new SerieRepository();
-        $series = $repo->findAll();
+        
+        // Récupérer les mots-clés de recherche
+        $searchQuery = $_GET['search'] ?? '';
+        $searchQuery = trim($searchQuery);
+        
+        // Rechercher ou afficher toutes les séries
+        if (!empty($searchQuery)) {
+            $series = $repo->search($searchQuery);
+            $isSearching = true;
+        } else {
+            $series = $repo->findAll();
+            $isSearching = false;
+        }
 
         // Récupérer les IDs des favoris de l'utilisateur connecté
         $userFavorites = [];
@@ -27,9 +39,46 @@ class CatalogueAction
         }
 
         $html = "<h1>Catalogue des séries</h1>";
+        
+        // Barre de recherche
+        $searchValue = htmlspecialchars($searchQuery);
+        $html .= "<div class='search-container'>
+                    <form method='GET' action='index.php' class='search-form'>
+                        <input type='hidden' name='action' value='catalogue'>
+                        <div class='search-input-wrapper'>
+                            <input type='text' 
+                                   name='search' 
+                                   placeholder='Rechercher une série par titre ou description...' 
+                                   value='{$searchValue}'
+                                   class='search-input'>
+                            <button type='submit' class='search-btn'>Rechercher</button>";
+        
+        if ($isSearching) {
+            $html .= "      <a href='index.php?action=catalogue' class='clear-search-btn' title='Effacer la recherche'>✕</a>";
+        }
+        
+        $html .= "      </div>
+                    </form>
+                  </div>";
+
+        // Résultats de recherche
+        if ($isSearching) {
+            $nbResults = count($series);
+            $plural = $nbResults > 1 ? 's' : '';
+            $html .= "<p class='search-results-info'>
+                        <strong>{$nbResults}</strong> résultat{$plural} pour « <em>{$searchValue}</em> »
+                      </p>";
+        }
 
         if (empty($series)) {
-            $html .= "<p>Aucune série en base.</p>";
+            if ($isSearching) {
+                $html .= "<div class='no-results'>
+                            <p>Aucune série trouvée pour « <strong>{$searchValue}</strong> »</p>
+                            <p><a href='index.php?action=catalogue' class='btn btn-secondary'>Voir toutes les séries</a></p>
+                          </div>";
+            } else {
+                $html .= "<p>Aucune série en base.</p>";
+            }
         } else {
             $html .= "<div class='series-grid'>";
             foreach ($series as $s) {
