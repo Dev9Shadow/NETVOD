@@ -1,115 +1,67 @@
 <?php
+declare(strict_types=1);
+
 namespace netvod\repository;
 
-use netvod\entity\Comment;
 use PDO;
 
 class CommentRepository
 {
-    public function findByUserAndSerie(int $userId, int $serieId): ?Comment
+    private function pdo(): PDO
     {
-        $pdo = ConnectionFactory::getConnection();
-        $stmt = $pdo->prepare("SELECT * FROM comment WHERE id_user = ? AND id_serie = ?");
-        $stmt->execute([$userId, $serieId]);
-        
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$row) {
-            return null;
+        // Compatible avec ton ConnectionFactory (getConnection OU makeConnection)
+        if (method_exists(ConnectionFactory::class, 'getConnection')) {
+            return ConnectionFactory::getConnection();
         }
-        
-        $comment = new Comment();
-        $comment->id = (int)$row['id'];
-        $comment->id_user = (int)$row['id_user'];
-        $comment->id_serie = (int)$row['id_serie'];
-        $comment->note = (int)$row['note'];
-        $comment->contenu = $row['contenu'];
-        $comment->created_at = $row['created_at'];
-        
-        return $comment;
+        return ConnectionFactory::makeConnection();
     }
 
-    public function findBySerie(int $serieId): array
+    /** Ajout d’un commentaire pour une série */
+    public function add(int $idUser, int $idSerie, int $note, string $contenu): void
     {
-        $pdo = ConnectionFactory::getConnection();
-        $query = "SELECT c.*, u.nom as user_nom, u.prenom as user_prenom 
-                  FROM comment c 
-                  LEFT JOIN user u ON c.id_user = u.id 
-                  WHERE c.id_serie = ? 
-                  ORDER BY c.created_at DESC";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute([$serieId]);
-        
-        $comments = [];
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $comment = new Comment();
-            $comment->id = (int)$row['id'];
-            $comment->id_user = (int)$row['id_user'];
-            $comment->id_serie = (int)$row['id_serie'];
-            $comment->note = (int)$row['note'];
-            $comment->contenu = $row['contenu'];
-            $comment->created_at = $row['created_at'];
-            $comment->user_nom = $row['user_nom'] ?? '';
-            $comment->user_prenom = $row['user_prenom'] ?? '';
-            
-            $comments[] = $comment;
-        }
-        
-        return $comments;
+        $pdo = $this->pdo();
+        $sql = "INSERT INTO comment (id_user, id_serie, note, contenu, created_at)
+                VALUES (:u, :s, :n, :c, NOW())";
+        $st = $pdo->prepare($sql);
+        $st->execute([
+            ':u' => $idUser,
+            ':s' => $idSerie,
+            ':n' => $note,
+            ':c' => $contenu,
+        ]);
     }
 
-    public function save(Comment $comment): bool
+    /** Liste des commentaires d’une série (avec nom/prénom de l’auteur) */
+    public function findBySerie(int $idSerie): array
     {
-        $pdo = ConnectionFactory::getConnection();
-        
-        // Vérifier si un commentaire existe déjà
-        $existing = $this->findByUserAndSerie($comment->id_user, $comment->id_serie);
-        
-        if ($existing) {
-            // Mise à jour
-            $stmt = $pdo->prepare(
-                "UPDATE comment SET note = ?, contenu = ? WHERE id_user = ? AND id_serie = ?"
-            );
-            return $stmt->execute([
-                $comment->note,
-                $comment->contenu,
-                $comment->id_user,
-                $comment->id_serie
-            ]);
-        } else {
-            // Insertion
-            $stmt = $pdo->prepare(
-                "INSERT INTO comment (id_user, id_serie, note, contenu) VALUES (?, ?, ?, ?)"
-            );
-            return $stmt->execute([
-                $comment->id_user,
-                $comment->id_serie,
-                $comment->note,
-                $comment->contenu
-            ]);
-        }
+        $pdo = $this->pdo();
+        $sql = "SELECT c.*, u.nom AS user_nom, u.prenom AS user_prenom
+                FROM comment c
+                JOIN user u ON u.id = c.id_user
+                WHERE c.id_serie = :s
+                ORDER BY c.created_at DESC";
+        $st = $pdo->prepare($sql);
+        $st->execute([':s' => $idSerie]);
+        $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+        return array_map(static fn($r) => (object)$r, $rows);
     }
 
-    public function getAverageNote(int $serieId): ?float
+    /** Note moyenne sur une série (arrondie à 0,1) */
+    public function getAverageNote(int $idSerie): ?float
     {
-        $pdo = ConnectionFactory::getConnection();
-        $stmt = $pdo->prepare("SELECT AVG(note) as moyenne FROM comment WHERE id_serie = ?");
-        $stmt->execute([$serieId]);
-        
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row && $row['moyenne'] !== null) {
-            return round((float)$row['moyenne'], 1);
-        }
-        
-        return null;
+        $pdo = $this->pdo();
+        $st = $pdo->prepare("SELECT AVG(note) FROM comment WHERE id_serie = :s");
+        $st->execute([':s' => $idSerie]);
+        $val = $st->fetchColumn();
+        return $val !== false ? round((float)$val, 1) : null;
     }
 
-    public function countComments(int $serieId): int
+    /** Nombre de commentaires sur une série */
+    public function countComments(int $idSerie): int
     {
-        $pdo = ConnectionFactory::getConnection();
-        $stmt = $pdo->prepare("SELECT COUNT(*) as total FROM comment WHERE id_serie = ?");
-        $stmt->execute([$serieId]);
-        
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int)($row['total'] ?? 0);
+        $pdo = $this->pdo();
+        $st = $pdo->prepare("SELECT COUNT(*) FROM comment WHERE id_serie = :s");
+        $st->execute([':s' => $idSerie]);
+        return (int)$st->fetchColumn();
     }
 }
