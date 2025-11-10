@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace netvod\renderer;
 
 class Layout
@@ -29,7 +31,7 @@ class Layout
                             <a href='index.php'>NETVOD</a>
                             <a href='index.php'>Accueil</a>
                             <a href='index.php?action=catalogue'>Catalogue</a>
-                            ". self::getUserMenu() . "
+                            " . self::getUserMenu() . "
                         </div>
                     </nav>
                     <div class='container'>
@@ -43,7 +45,6 @@ class Layout
                 </body>
                 </html>";
     }
-            
 
     private static function renderFlash(): string
     {
@@ -67,10 +68,10 @@ class Layout
 
         return $html;
     }
-    
+
     private static function getJavaScript(): string
     {
-    return <<<'JS'
+        return <<<'JS'
     <script>
     // Gestion des favoris
     document.addEventListener('DOMContentLoaded', function() {
@@ -148,11 +149,14 @@ JS;
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        if (isset($_SESSION['user_id'])) {
-            return "<a href='index.php?action=profile'>Profil</a>";
-        }
-        return "<a href='index.php?action=login'>Connexion</a>";
-                
-    }
 
+        // Si connecté : on ajoute "Reprendre" + "Profil"
+        if (isset($_SESSION['user_id'])) {
+            return "<a href='index.php?action=resume'>Reprendre</a>
+                    <a href='index.php?action=profile'>Profil</a>";
+        }
+
+        // Sinon : lien vers la connexion
+        return "<a href='index.php?action=login'>Connexion</a>";
+    }
 }
