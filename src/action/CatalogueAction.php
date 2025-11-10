@@ -51,7 +51,7 @@ class CatalogueAction
                                   </button>";
                 }
                 
-                $html .= "<div class='card serie-card'>
+                $html .= "<div class='card serie-card' onclick=\"window.location.href='index.php?action=serie&id={$s->id}'\" style='cursor:pointer;'>
                             <div class='serie-poster'>
                                 <img src='{$imgPath}' alt='" . htmlspecialchars($s->titre) . "' onerror=\"this.src='images/default.jpg'\">
                                 {$favoriBtn}

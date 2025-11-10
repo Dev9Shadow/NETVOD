@@ -43,7 +43,7 @@ class FavorisAction
                 $imgName = $s->img ?? 'default.jpg';
                 $imgPath = 'images/' . $imgName;
                 
-                $html .= "<div class='card serie-card'>
+                $html .= "<div class='card serie-card' onclick=\"window.location.href='index.php?action=serie&id={$s->id}'\" style='cursor:pointer;'>
                             <div class='serie-poster'>
                                 <img src='{$imgPath}' alt='" . htmlspecialchars($s->titre) . "' onerror=\"this.src='images/default.jpg'\">
                                 <button class='favori-btn active' data-serie-id='{$s->id}' title='Retirer des favoris'>

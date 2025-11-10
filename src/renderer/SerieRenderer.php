@@ -25,7 +25,7 @@ class SerieRenderer
         }
 
         return <<<HTML
-        <div class='card'>
+        <div class='card' onclick="window.location.href='index.php?action=serie&id={$id}'" style='cursor:pointer;'>
             <a href='index.php?action=serie&id={$id}'>
                 <h3>{$titre}</h3>
             </a>
