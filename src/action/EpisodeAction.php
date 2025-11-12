@@ -8,6 +8,7 @@ use netvod\repository\EpisodeRepository;
 use netvod\repository\EpisodeVueRepository;
 use netvod\repository\ProgressRepository;
 use netvod\repository\CommentRepository;
+use netvod\repository\AlreadyWatchedRepository;
 use netvod\renderer\EpisodeRenderer;
 use netvod\renderer\Layout;
 
@@ -45,23 +46,37 @@ class EpisodeAction
             exit;
         }
 
-        /* B) POST AJAX : sauvegarde position / marquer vu (reprendre auto) */
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id']) && isset($_POST['episode_id'])) {
+        /* B) POST AJAX : sauvegarde position / marquer vu (reprendre auto + déjà visionnées) */
+        if ($_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_SESSION['user_id'])
+            && isset($_POST['episode_id'])) {
+
             $idUser = (int) $_SESSION['user_id'];
             $idEp   = (int) ($_POST['episode_id'] ?? 0);
             $pos    = max(0, (int) ($_POST['position_sec'] ?? 0));
             $vu     = isset($_POST['vu']) ? 1 : 0;
 
             if ($idEp > 0) {
+                // Enregistrer la position + état vu dans episode_vue
                 $vueRepo = new EpisodeVueRepository();
                 $vueRepo->upsert($idUser, $idEp, $pos, $vu);
 
+                // Si l'épisode est terminé -> maj "reprendre" + bascule en "déjà visionnées" si tout vu
                 if ($vu === 1) {
                     $epRepo  = new EpisodeRepository();
                     $episode = $epRepo->findById($idEp);
                     if ($episode) {
+                        // maj progress (reprendre)
                         $progRepo = new ProgressRepository();
                         $progRepo->upsert($idUser, (int)$episode->id_serie, $idEp);
+
+                        // vérifier si la série est complètement vue
+                        $aw = new AlreadyWatchedRepository();
+                        if ($aw->isComplete($idUser, (int)$episode->id_serie)) {
+                            $aw->mark($idUser, (int)$episode->id_serie);
+                            // (optionnel) on retire la série de progress
+                            $aw->clearProgress($idUser, (int)$episode->id_serie);
+                        }
                     }
                 }
             }
@@ -85,10 +100,12 @@ class EpisodeAction
             return Layout::render($content, "Épisode - NETVOD");
         }
 
+        // Préfixe pour trouver la vidéo dans /videos
         if (!empty($ep->file) && substr((string)$ep->file, 0, 7) !== 'videos/') {
             $ep->file = 'videos/' . $ep->file;
         }
 
+        // Reprise depuis la dernière position si connecté
         $resumeFrom = 0;
         $logged     = isset($_SESSION['user_id']);
         if ($logged) {
