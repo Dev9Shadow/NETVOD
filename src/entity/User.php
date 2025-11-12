@@ -8,4 +8,6 @@ class User
     public ?string $password_hash = null;
     public ?string $nom = null;
     public ?string $prenom = null;
+    public ?int $age = null;
+    public ?string $genre_prefere = null;
 }
