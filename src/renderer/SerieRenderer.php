@@ -6,11 +6,6 @@ use netvod\entity\Episode;
 
 class SerieRenderer
 {
-    /**
-     * Affiche une carte de série pour le catalogue
-     * @param Serie $serie
-     * @return string
-     */
     public static function renderCard(Serie $serie): string
     {
         $id = htmlspecialchars($serie->id ?? '');
@@ -19,7 +14,6 @@ class SerieRenderer
         $annee = htmlspecialchars($serie->annee ?? 'N/A');
         $genre = htmlspecialchars($serie->genre ?? 'Non spécifié');
         
-        // Limiter le descriptif à 150 caractères
         if (strlen($descriptif) > 150) {
             $descriptif = substr($descriptif, 0, 150) . '...';
         }
@@ -37,11 +31,6 @@ class SerieRenderer
 HTML;
     }
 
-    /**
-     * Affiche les détails complets d'une série
-     * @param Serie $serie
-     * @return string
-     */
     public static function renderDetail(Serie $serie): string
     {
         $titre = htmlspecialchars($serie->titre ?? 'Sans titre');
@@ -55,10 +44,10 @@ HTML;
         <div class='serie-detail'>
             <h1>{$titre}</h1>
             <div style='margin-bottom: 20px;'>
-                <small style='margin-right: 20px;'>📅 Année : {$annee}</small>
-                <small style='margin-right: 20px;'>🎬 Genre : {$genre}</small>
-                <small style='margin-right: 20px;'>📺 {$nbEpisodes} épisode(s)</small>
-                <small>🗓️ Sortie : {$dateSortie}</small>
+                <small style='margin-right: 20px;'>Année : {$annee}</small>
+                <small style='margin-right: 20px;'>Genre : {$genre}</small>
+                <small style='margin-right: 20px;'>{$nbEpisodes} épisode(s)</small>
+                <small>Sortie : {$dateSortie}</small>
             </div>
             <p style='line-height: 1.8; margin-bottom: 30px;'>{$descriptif}</p>
             <hr>
@@ -66,12 +55,6 @@ HTML;
 HTML;
     }
 
-    /**
-     * Affiche une série avec sa liste d'épisodes
-     * @param Serie $serie
-     * @param Episode[] $episodes
-     * @return string
-     */
     public static function renderWithEpisodes(Serie $serie, array $episodes): string
     {
         $html = self::renderDetail($serie);

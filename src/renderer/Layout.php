@@ -129,7 +129,6 @@ JS;
         if (session_status() === PHP_SESSION_NONE) session_start();
 
         if (isset($_SESSION['user_id'])) {
-            // Lien profil uniquement (plus de lien “Reprendre” ici)
             return "<a href='index.php?action=profile'>Profil</a>";
         }
         return "<a href='index.php?action=login'>Connexion</a>";

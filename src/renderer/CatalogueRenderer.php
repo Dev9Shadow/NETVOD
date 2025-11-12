@@ -5,11 +5,6 @@ use netvod\entity\Serie;
 
 class CatalogueRenderer
 {
-    /**
-     * Affiche une grille de séries
-     * @param Serie[] $series
-     * @return string
-     */
     public static function render(array $series): string
     {
         if (empty($series)) {
@@ -27,11 +22,6 @@ class CatalogueRenderer
         return $html;
     }
 
-    /**
-     * Affiche le catalogue complet avec titre
-     * @param Serie[] $series
-     * @return string
-     */
     public static function renderComplete(array $series): string
     {
         $count = count($series);

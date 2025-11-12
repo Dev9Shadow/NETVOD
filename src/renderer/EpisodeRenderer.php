@@ -27,7 +27,7 @@ class EpisodeRenderer
         return <<<HTML
         <div class='episode-item'>
             <h4>Épisode {$numero} : {$titre}</h4>
-            <p><small>⏱️ Durée : {$duree} min</small></p>
+            <p><small>Durée : {$duree} min</small></p>
             <p>{$resume}</p>
             <a href='index.php?action=episode&id={$id}'>Regarder →</a>
         </div>
@@ -71,7 +71,6 @@ HTML;
             $backLink = "<a href='index.php?action=serie&id={$serieId}' style='display: inline-block; margin-bottom: 20px;'>← Retour à la série</a>";
         }
 
-        /* Formulaire commentaire (lié à la SÉRIE), visible si connecté */
         $commentForm = '';
         if ($logged && !empty($serieId)) {
             $commentForm = <<<HTML
@@ -101,7 +100,6 @@ HTML;
 HTML;
         }
 
-        /* JS auto-save (reprendre) + no POST AJAX pendant envoi du formulaire */
         $script = <<<JS
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -115,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function postState(pos, vu) {
     if (!LOGGED || !EP_ID) return;
-    if (window.__nvSubmitting) return; // ne pas envoyer pendant la soumission du formulaire
+    if (window.__nvSubmitting) return;
     const body = new URLSearchParams({
       episode_id: EP_ID,
       position_sec: Math.max(0, Math.floor(pos || 0)),
@@ -158,7 +156,7 @@ JS;
         <div class='episode-detail'>
             {$backLink}
             <h1>Épisode {$numero} : {$titre}</h1>
-            <p><small>⏱️ Durée : {$duree} secondes</small></p>
+            <p><small>Durée : {$duree} secondes</small></p>
             {$videoHtml}
             <h2>Résumé</h2>
             <p style='line-height: 1.8;'>{$resume}</p>
