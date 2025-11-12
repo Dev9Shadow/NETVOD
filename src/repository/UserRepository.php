@@ -23,6 +23,8 @@ class UserRepository
         $user->password_hash = $row['password_hash'];
         $user->nom = $row['nom'] ?? '';
         $user->prenom = $row['prenom'] ?? '';
+        $user->age = isset($row['age']) ? (int)$row['age'] : null;
+        $user->genre_prefere = $row['genre_prefere'] ?? null;
         
         return $user;
     }
@@ -31,15 +33,17 @@ class UserRepository
     {
         $pdo = ConnectionFactory::getConnection();
         $stmt = $pdo->prepare(
-            "INSERT INTO user (email, password_hash, nom, prenom) 
-             VALUES (?, ?, ?, ?)"
+            "INSERT INTO user (email, password_hash, nom, prenom, age, genre_prefere) 
+             VALUES (?, ?, ?, ?, ?, ?)"
         );
         
         return $stmt->execute([
             $user->email,
             $user->password_hash,
             $user->nom,
-            $user->prenom
+            $user->prenom,
+            $user->age,
+            $user->genre_prefere
         ]);
     }
 
@@ -60,15 +64,17 @@ class UserRepository
         $user->password_hash = $row['password_hash'];
         $user->nom = $row['nom'] ?? '';
         $user->prenom = $row['prenom'] ?? '';
+        $user->age = isset($row['age']) ? (int)$row['age'] : null;
+        $user->genre_prefere = $row['genre_prefere'] ?? null;
         
         return $user;
     }
 
-    public function updateInfo(int $id, string $email, string $nom, string $prenom): bool
+    public function updateInfo(int $id, string $email, string $nom, string $prenom, ?int $age, ?string $genrePrefere): bool
     {
         $pdo = ConnectionFactory::getConnection();
-        $stmt = $pdo->prepare("UPDATE user SET email = ?, nom = ?, prenom = ? WHERE id = ?");
-        return $stmt->execute([$email, $nom, $prenom, $id]);
+        $stmt = $pdo->prepare("UPDATE user SET email = ?, nom = ?, prenom = ?, age = ?, genre_prefere = ? WHERE id = ?");
+        return $stmt->execute([$email, $nom, $prenom, $age, $genrePrefere, $id]);
     }
 
     public function updatePassword(int $id, string $passwordHash): bool

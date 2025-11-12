@@ -23,6 +23,8 @@ CREATE TABLE IF NOT EXISTS user (
     password_hash VARCHAR(255) NOT NULL,
     nom VARCHAR(100) DEFAULT '',
     prenom VARCHAR(100) DEFAULT ''
+    age INT DEFAULT NULL,
+    genre_prefere VARCHAR(100) DEFAULT NULL;
 );
 
 -- ---------------------------------------------------------
@@ -136,6 +138,15 @@ CREATE TABLE IF NOT EXISTS episode_vue (
   PRIMARY KEY (id_user, id_episode),
   CONSTRAINT fk_ev_user    FOREIGN KEY (id_user)    REFERENCES user(id)    ON DELETE CASCADE,
   CONSTRAINT fk_ev_episode FOREIGN KEY (id_episode) REFERENCES episode(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS already_watched (
+  id_user   INT NOT NULL,
+  id_serie  INT NOT NULL,
+  marked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id_user, id_serie),
+  CONSTRAINT fk_aw_user  FOREIGN KEY (id_user)  REFERENCES user(id)  ON DELETE CASCADE,
+  CONSTRAINT fk_aw_serie FOREIGN KEY (id_serie) REFERENCES serie(id) ON DELETE CASCADE
 );
 
 SET foreign_key_checks = 1;
