@@ -147,4 +147,14 @@ CREATE TABLE IF NOT EXISTS already_watched (
   CONSTRAINT fk_aw_serie FOREIGN KEY (id_serie) REFERENCES serie(id) ON DELETE CASCADE
 );
 
+CREATE TABLE password_reset (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(64) NOT NULL UNIQUE,
+    created_at DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);
+
 SET foreign_key_checks = 1;

@@ -14,6 +14,8 @@ class Authz
             'serie',
             'logout',
             'testdb',
+            'forgotpassword',
+            'resetpassword',
         ];
         return in_array($action, $public, true);
     }

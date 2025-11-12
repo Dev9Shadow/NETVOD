@@ -58,6 +58,9 @@ class LoginAction
             <p style='text-align: center; margin-top: 20px;'>
                 <a href='index.php?action=register'>Pas encore de compte ? S'inscrire</a>
             </p>
+            <p style='text-align: center; margin-top: 15px;'>
+                <a href='index.php?action=forgotpassword'>Mot de passe oublié ?</a>
+            </p>
         ";
         
         return Layout::render($html, "Connexion - NETVOD");
