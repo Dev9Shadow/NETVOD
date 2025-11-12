@@ -37,17 +37,24 @@ class ProfileAction
                 $prenom = trim($_POST['prenom'] ?? '');
                 $nom = trim($_POST['nom'] ?? '');
                 $email = trim($_POST['email'] ?? '');
+                $age = trim($_POST['age'] ?? '');
+                $genrePrefere = trim($_POST['genre_prefere'] ?? '');
 
                 if ($prenom === '' || $nom === '' || $email === '') {
-                    $infoError = "Veuillez remplir tous les champs.";
+                    $infoError = "Veuillez remplir tous les champs obligatoires.";
                 } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     $infoError = "Adresse email invalide.";
+                } elseif ($age !== '' && (!is_numeric($age) || (int)$age < 1 || (int)$age > 150)) {
+                    $infoError = "L'âge doit être un nombre entre 1 et 150.";
                 } else {
                     $other = $repo->findByEmail($email);
                     if ($other && $other->id !== $user->id) {
                         $infoError = "Cet email est déjà utilisé.";
                     } else {
-                        if ($repo->updateInfo($user->id, $email, $nom, $prenom)) {
+                        $ageValue = $age !== '' ? (int)$age : null;
+                        $genreValue = $genrePrefere !== '' ? $genrePrefere : null;
+                        
+                        if ($repo->updateInfo($user->id, $email, $nom, $prenom, $ageValue, $genreValue)) {
                             $user = $repo->findById($user->id) ?? $user;
                             $_SESSION['user_email'] = $user->email;
                             $_SESSION['user_nom'] = $user->nom;
@@ -108,23 +115,47 @@ class ProfileAction
         $html .= "<div class='profile-container'>";
 
         // Colonne gauche - Informations personnelles
+        $ageValue = $user->age !== null ? htmlspecialchars((string)$user->age) : '';
+        $genreValue = htmlspecialchars((string)($user->genre_prefere ?? ''));
+        
         $html .= "
         <div class='profile-section'>
             <h2>Informations personnelles</h2>
             <form method='POST'>
                 <input type='hidden' name='form_type' value='info'>
                 <div>
-                    <label>Prénom</label>
+                    <label>Prénom <span style='color:#e50914'>*</span></label>
                     <input type='text' name='prenom' value='" . htmlspecialchars((string)$user->prenom) . "' required>
                 </div>
                 <div>
-                    <label>Nom</label>
+                    <label>Nom <span style='color:#e50914'>*</span></label>
                     <input type='text' name='nom' value='" . htmlspecialchars((string)$user->nom) . "' required>
                 </div>
                 <div>
-                    <label>Email</label>
+                    <label>Email <span style='color:#e50914'>*</span></label>
                     <input type='email' name='email' value='" . htmlspecialchars((string)$user->email) . "' required>
                 </div>
+                <div>
+                    <label>Âge</label>
+                    <input type='number' name='age' value='{$ageValue}' min='1' max='150' placeholder='Optionnel'>
+                </div>
+                <div>
+                    <label>Genre préféré</label>
+                    <select name='genre_prefere'>
+                        <option value=''>-- Choisir un genre --</option>
+                        <option value='Action'" . ($genreValue === 'Action' ? ' selected' : '') . ">Action</option>
+                        <option value='Aventure'" . ($genreValue === 'Aventure' ? ' selected' : '') . ">Aventure</option>
+                        <option value='Comedie'" . ($genreValue === 'Comedie' ? ' selected' : '') . ">Comédie</option>
+                        <option value='Drame'" . ($genreValue === 'Drame' ? ' selected' : '') . ">Drame</option>
+                        <option value='Fantastique'" . ($genreValue === 'Fantastique' ? ' selected' : '') . ">Fantastique</option>
+                        <option value='Horreur'" . ($genreValue === 'Horreur' ? ' selected' : '') . ">Horreur</option>
+                        <option value='Science-fiction'" . ($genreValue === 'Science-fiction' ? ' selected' : '') . ">Science-fiction</option>
+                        <option value='Sport'" . ($genreValue === 'Sport' ? ' selected' : '') . ">Sport</option>
+                        <option value='Thriller'" . ($genreValue === 'Thriller' ? ' selected' : '') . ">Thriller</option>
+                        <option value='Western'" . ($genreValue === 'Western' ? ' selected' : '') . ">Western</option>
+                    </select>
+                </div>
+                <small style='color:#808080'>Les champs marqués d'un <span style='color:#e50914'>*</span> sont obligatoires</small>
                 <button type='submit'>Enregistrer</button>
             </form>
         </div>
