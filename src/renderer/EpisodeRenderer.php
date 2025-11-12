@@ -158,7 +158,7 @@ JS;
         <div class='episode-detail'>
             {$backLink}
             <h1>Épisode {$numero} : {$titre}</h1>
-            <p><small>⏱️ Durée : {$duree} minutes</small></p>
+            <p><small>⏱️ Durée : {$duree} secondes</small></p>
             {$videoHtml}
             <h2>Résumé</h2>
             <p style='line-height: 1.8;'>{$resume}</p>
