@@ -7,12 +7,12 @@ use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\FavoriRepository;
 use netvod\repository\SerieRepository;
-use netvod\repository\ProgressRepository;
 
 class DefaultAction
 {
     private function pdo()
     {
+        // Compat cours : certaines bases ont getConnection(), d’autres makeConnection()
         if (method_exists(ConnectionFactory::class, 'getConnection')) {
             return ConnectionFactory::getConnection();
         }
@@ -32,17 +32,18 @@ class DefaultAction
 </div>
 HTML;
 
-        /* ---------------------- Reprendre (en cartes) ---------------------- */
+        /* ------------------------------ Reprendre ------------------------------ */
         if (isset($_SESSION['user_id'])) {
             $pdo    = $this->pdo();
             $userId = (int) $_SESSION['user_id'];
 
+            // Séries en cours = présentes dans progress et non déjà vues
             $sql = "
-                SELECT s.id           AS serie_id,
-                       s.titre        AS serie_titre,
-                       s.descriptif   AS serie_desc,
-                       s.img          AS serie_img,
-                       s.annee        AS serie_annee,
+                SELECT s.id              AS serie_id,
+                       s.titre           AS serie_titre,
+                       s.descriptif      AS serie_desc,
+                       s.img             AS serie_img,
+                       s.annee           AS serie_annee,
                        p.last_episode_id AS ep_id
                 FROM progress p
                 JOIN serie s ON s.id = p.id_serie
@@ -59,30 +60,29 @@ HTML;
                                <h2>Reprendre la lecture</h2>
                                <div class='series-grid'>";
                 foreach ($rows as $r) {
-                    $sid = (int)$r['serie_id'];
-                    $st  = htmlspecialchars($r['serie_titre'] ?? 'Sans titre', ENT_QUOTES, 'UTF-8');
-                    $sd  = htmlspecialchars($r['serie_desc']  ?? 'Pas de description', ENT_QUOTES, 'UTF-8');
-                    $sa  = htmlspecialchars((string)($r['serie_annee'] ?? 'N/A'), ENT_QUOTES, 'UTF-8');
-                    $img = 'images/' . (($r['serie_img'] ?? '') !== '' ? $r['serie_img'] : 'default.jpg');
+                    $sid  = (int)$r['serie_id'];
+                    $stt  = htmlspecialchars($r['serie_titre'] ?? 'Sans titre', ENT_QUOTES, 'UTF-8');
+                    $sd   = htmlspecialchars($r['serie_desc']  ?? 'Pas de description', ENT_QUOTES, 'UTF-8');
+                    $sa   = htmlspecialchars((string)($r['serie_annee'] ?? 'N/A'), ENT_QUOTES, 'UTF-8');
+                    $img  = 'images/' . (($r['serie_img'] ?? '') !== '' ? $r['serie_img'] : 'default.jpg');
                     $epId = (int)$r['ep_id'];
 
                     $content .= "
                     <div class='card serie-card'>
                         <div class='serie-poster' onclick=\"window.location.href='index.php?action=episode&id={$epId}'\" style='cursor:pointer;'>
-                            <img src='{$img}' alt='{$st}' onerror=\"this.src='images/default.jpg'\">
+                            <img src='{$img}' alt='{$stt}' onerror=\"this.src='images/default.jpg'\">
                         </div>
                         <div class='serie-info'>
-                            <h3>{$st}</h3>
+                            <h3>{$stt}</h3>
                             <p>{$sd}</p>
                             <div class='actions'
-                                style='display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:8px'>
-                              <a class='btn btn-play'
-                                style='display:block;width:auto'
-                                href='index.php?action=episode&id=<?= $last ?>'>▶ Reprendre</a>
-
-                              <a class='btn btn-secondary'
-                                style='display:block;width:auto'
-                                href='index.php?action=serie&id=<?= $sid ?>'>Voir la série</a>
+                                 style='display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:8px'>
+                                <a class='btn btn-play'
+                                   style='display:block;width:auto'
+                                   href='index.php?action=episode&id={$epId}'>▶ Reprendre</a>
+                                <a class='btn btn-secondary'
+                                   style='display:block;width:auto'
+                                   href='index.php?action=serie&id={$sid}'>Voir la série</a>
                             </div>
                             <small>Année : {$sa}</small>
                         </div>
@@ -92,10 +92,10 @@ HTML;
             }
         }
 
-        /* --------------------------- Mes Favoris --------------------------- */
+        /* ------------------------------ Mes Favoris ------------------------------ */
         if (isset($_SESSION['user_id'])) {
-            $userId = (int)$_SESSION['user_id'];
-            $favoriRepo  = new FavoriRepository();
+            $userId     = (int)$_SESSION['user_id'];
+            $favoriRepo = new FavoriRepository();
             $favoriteIds = $favoriRepo->getUserFavoriteIds($userId);
 
             if (!empty($favoriteIds)) {
@@ -134,14 +134,14 @@ HTML;
                 $content .= "<div class='favorites-section'>
                                <h2>Mes Favoris</h2>
                                <div class='no-favorites-home'>
-                                 <p>Vous n'avez pas encore ajouté de séries à vos favoris.</p>
-                                 <a href='index.php?action=catalogue' class='btn'>Parcourir le catalogue</a>
+                                   <p>Vous n'avez pas encore ajouté de séries à vos favoris.</p>
+                                   <a href='index.php?action=catalogue' class='btn'>Parcourir le catalogue</a>
                                </div>
                              </div>";
             }
         }
 
-        /* ------------------------ Déjà visionnées ------------------------- */
+        /* ------------------------------ Déjà visionnées ------------------------------ */
         if (isset($_SESSION['user_id'])) {
             $pdo    = $this->pdo();
             $userId = (int) $_SESSION['user_id'];
