@@ -3,9 +3,7 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
--- ---------------------------------------------------------
--- Suppression préalable
--- ---------------------------------------------------------
+
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS progress;
 DROP TABLE IF EXISTS favorite;
@@ -14,9 +12,6 @@ DROP TABLE IF EXISTS serie;
 DROP TABLE IF EXISTS public_cible;
 DROP TABLE IF EXISTS user;
 
--- ---------------------------------------------------------
--- Table : user
--- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS user (
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -27,17 +22,12 @@ CREATE TABLE IF NOT EXISTS user (
     genre_prefere VARCHAR(100) DEFAULT NULL
 );
 
--- ---------------------------------------------------------
--- Table : public_cible
--- ---------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS public_cible (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(64) NOT NULL UNIQUE
 );
 
--- ---------------------------------------------------------
--- Table : serie
--- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS serie (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titre VARCHAR(255) NOT NULL,
@@ -52,9 +42,6 @@ CREATE TABLE IF NOT EXISTS serie (
         REFERENCES public_cible(id)
 );
 
--- ---------------------------------------------------------
--- Table : episode
--- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS episode (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_serie INT NOT NULL,
@@ -69,9 +56,7 @@ CREATE TABLE IF NOT EXISTS episode (
         ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------
--- Table : favorite
--- ---------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS favorite (
     id_user INT NOT NULL,
     id_serie INT NOT NULL,
@@ -86,9 +71,7 @@ CREATE TABLE IF NOT EXISTS favorite (
         ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------
--- Table : progress
--- ---------------------------------------------------------
+
 CREATE TABLE IF NOT EXISTS progress (
     id_user INT NOT NULL,
     id_serie INT NOT NULL,
@@ -109,9 +92,6 @@ CREATE TABLE IF NOT EXISTS progress (
         ON DELETE CASCADE
 );
 
--- ---------------------------------------------------------
--- Table : comment
--- ---------------------------------------------------------
 CREATE TABLE IF NOT EXISTS comment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     id_user INT NOT NULL,
