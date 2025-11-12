@@ -7,6 +7,73 @@ use PDO;
 
 class SerieRepository
 {
+    public function getDistinctGenres(): array
+    {
+        $pdo = ConnectionFactory::getConnection();
+        $query = "SELECT DISTINCT genre FROM serie WHERE genre IS NOT NULL AND genre <> '' ORDER BY genre";
+        $stmt = $pdo->query($query);
+
+        $genres = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $genres[] = $row['genre'];
+        }
+
+        return $genres;
+    }
+
+    public function findAllFiltered(?string $genre = null, ?int $publicId = null, ?string $search = null): array
+    {
+        $pdo = ConnectionFactory::getConnection();
+        $query = "SELECT s.*, pc.nom as public_nom 
+                  FROM serie s 
+                  LEFT JOIN public_cible pc ON s.id_public_cible = pc.id
+                  WHERE 1=1";
+        $params = [];
+
+        if ($search !== null && trim($search) !== '') {
+            $query .= " AND (s.titre LIKE ? OR s.descriptif LIKE ?)";
+            $term = '%' . $search . '%';
+            $params[] = $term;
+            $params[] = $term;
+        }
+
+        if ($genre !== null && $genre !== '') {
+            $query .= " AND s.genre = ?";
+            $params[] = $genre;
+        }
+
+        if ($publicId !== null && $publicId > 0) {
+            $query .= " AND s.id_public_cible = ?";
+            $params[] = $publicId;
+        }
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
+
+        $series = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $serie = new Serie();
+            $serie->id = (int)$row['id'];
+            $serie->titre = $row['titre'];
+            $serie->descriptif = $row['descriptif'] ?? null;
+            $serie->img = $row['img'] ?? null;
+            $serie->annee = isset($row['annee']) ? (int)$row['annee'] : null;
+            $serie->date_ajout = $row['date_ajout'] ?? null;
+            $serie->genre = $row['genre'] ?? null;
+            $serie->id_public_cible = isset($row['id_public_cible']) ? (int)$row['id_public_cible'] : null;
+
+            if (!empty($row['public_nom'])) {
+                $public = new PublicCible();
+                $public->id = $serie->id_public_cible;
+                $public->nom = $row['public_nom'];
+                $serie->publicCible = $public;
+            }
+
+            $series[] = $serie;
+        }
+
+        return $series;
+    }
     public function findAll(): array
     {
         $pdo = ConnectionFactory::getConnection();
