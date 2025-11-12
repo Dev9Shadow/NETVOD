@@ -9,10 +9,10 @@ use netvod\repository\EpisodeVueRepository;
 use netvod\repository\ProgressRepository;
 use netvod\repository\CommentRepository;
 use netvod\renderer\EpisodeRenderer;
-use netvod\renderer\Layout;
 
 class EpisodeAction
 {
+    public string $title = '';
     private function pdo()
     {
         // Compat : certaines bases ont getConnection(), d’autres makeConnection()
@@ -118,14 +118,16 @@ class EpisodeAction
         $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if ($id <= 0) {
             $content = EpisodeRenderer::renderNotFound();
-            return Layout::render($content, "Épisode - NETVOD");
+            $this->title = "Épisode - NETVOD";
+            return $content;
         }
 
         $repo = new EpisodeRepository();
         $ep   = $repo->findById($id);
         if (!$ep) {
             $content = EpisodeRenderer::renderNotFound();
-            return Layout::render($content, "Épisode - NETVOD");
+            $this->title = "Épisode - NETVOD";
+            return $content;
         }
 
         // Préfix "videos/" si besoin
@@ -143,6 +145,7 @@ class EpisodeAction
         }
 
         $content = EpisodeRenderer::renderDetail($ep, $resumeFrom, $logged);
-        return Layout::render($content, ($ep->titre ?? 'Épisode') . " - NETVOD");
+        $this->title = ($ep->titre ?? 'Épisode') . " - NETVOD";
+        return $content;
     }
 }

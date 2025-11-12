@@ -1,13 +1,12 @@
 <?php
 namespace netvod\action;
-
-use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
 use netvod\repository\PasswordResetRepository;
 
 class ForgotPasswordAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -71,6 +70,7 @@ class ForgotPasswordAction
         </form>
         ";
         
-        return Layout::render($html, "Mot de passe oublié - NETVOD");
+        $this->title = "Mot de passe oublié - NETVOD";
+        return $html;
     }
 }

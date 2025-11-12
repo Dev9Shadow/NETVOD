@@ -4,11 +4,12 @@ namespace netvod\action;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
 use netvod\entity\User;
-use netvod\renderer\Layout;
+ 
 use netvod\util\PasswordValidator;
 
 class RegisterAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -106,7 +107,8 @@ class RegisterAction
             ";
         }
 
-        return Layout::render($html, 'Inscription - NETVOD');
+        $this->title = 'Inscription - NETVOD';
+        return $html;
     }
 }
 

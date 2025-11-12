@@ -6,10 +6,11 @@ use netvod\repository\SerieRepository;
 use netvod\repository\FavoriRepository;
 use netvod\repository\PublicCibleRepository;
 use netvod\repository\CommentRepository;
-use netvod\renderer\Layout;
+ 
 
 class CatalogueAction
 {
+    public string $title = '';
     public function execute(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -226,6 +227,7 @@ class CatalogueAction
             $html .= "</div>";
         }
 
-        return Layout::render($html, "Catalogue - NETVOD");
+        $this->title = "Catalogue - NETVOD";
+        return $html;
     }
 }

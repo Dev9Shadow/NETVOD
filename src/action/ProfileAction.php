@@ -1,13 +1,12 @@
 <?php
 namespace netvod\action;
-
-use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
 use netvod\util\PasswordValidator;
 
 class ProfileAction
 {
+    public string $title = '';
     public function execute(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -194,6 +193,7 @@ class ProfileAction
         </section>
         ";
 
-        return Layout::render($html, 'Mon profil - NETVOD');
+        $this->title = 'Mon profil - NETVOD';
+        return $html;
     }
 }

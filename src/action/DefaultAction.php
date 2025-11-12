@@ -2,14 +2,13 @@
 declare(strict_types=1);
 
 namespace netvod\action;
-
-use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\FavoriRepository;
 use netvod\repository\SerieRepository;
 
 class DefaultAction
 {
+    public string $title = '';
     private function pdo()
     {
         // Compat cours : certaines bases ont getConnection(), d’autres makeConnection()
@@ -182,6 +181,7 @@ HTML;
             }
         }
 
-        return Layout::render($content, "NETVOD - Accueil");
+        $this->title = "NETVOD - Accueil";
+        return $content;
     }
 }

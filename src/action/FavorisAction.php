@@ -3,10 +3,11 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\FavoriRepository;
-use netvod\renderer\Layout;
+ 
 
 class FavorisAction
 {
+    public string $title = '';
     public function execute(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -14,12 +15,10 @@ class FavorisAction
         }
         
         if (!isset($_SESSION['user_id'])) {
-            return Layout::render(
-                "<h1>Accès refusé</h1>
+            $this->title = "Favoris - NETVOD";
+            return "<h1>Accès refusé</h1>
                 <p>Vous devez être connecté pour accéder à vos favoris.</p>
-                <p><a href='index.php?action=login' class='btn'>Se connecter</a></p>",
-                "Favoris - NETVOD"
-            );
+                <p><a href='index.php?action=login' class='btn'>Se connecter</a></p>";
         }
 
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -60,6 +59,7 @@ class FavorisAction
             $html .= "</div>";
         }
 
-        return Layout::render($html, "Mes Favoris - NETVOD");
+        $this->title = "Mes Favoris - NETVOD";
+        return $html;
     }
 }

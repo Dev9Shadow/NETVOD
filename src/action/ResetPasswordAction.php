@@ -1,7 +1,5 @@
 <?php
 namespace netvod\action;
-
-use netvod\renderer\Layout;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
 use netvod\repository\PasswordResetRepository;
@@ -9,6 +7,7 @@ use netvod\util\PasswordValidator;
 
 class ResetPasswordAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -17,12 +16,10 @@ class ResetPasswordAction
         $error = $success = null;
         
         if (empty($token)) {
-            return Layout::render(
-                "<h1>Lien invalide</h1>
+            $this->title = "Erreur - NETVOD";
+            return "<h1>Lien invalide</h1>
                 <p>Le lien de réinitialisation est invalide ou a expiré.</p>
-                <p><a href='index.php?action=forgot-password' class='btn'>Demander un nouveau lien</a></p>",
-                "Erreur - NETVOD"
-            );
+                <p><a href='index.php?action=forgot-password' class='btn'>Demander un nouveau lien</a></p>";
         }
         
         // Vérifier que le token est valide
@@ -30,12 +27,10 @@ class ResetPasswordAction
         $userId = $resetRepo->validateToken($token);
         
         if (!$userId) {
-            return Layout::render(
-                "<h1>Lien expiré</h1>
+            $this->title = "Erreur - NETVOD";
+            return "<h1>Lien expiré</h1>
                 <p>Ce lien de réinitialisation a expiré ou a déjà été utilisé.</p>
-                <p><a href='index.php?action=forgot-password' class='btn'>Demander un nouveau lien</a></p>",
-                "Erreur - NETVOD"
-            );
+                <p><a href='index.php?action=forgot-password' class='btn'>Demander un nouveau lien</a></p>";
         }
         
         // Traiter le formulaire
@@ -60,12 +55,10 @@ class ResetPasswordAction
                         // Marquer le token comme utilisé
                         $resetRepo->markTokenAsUsed($token);
                         
-                        return Layout::render(
-                            "<h1>Mot de passe réinitialisé</h1>
+                        $this->title = "Succès - NETVOD";
+                        return "<h1>Mot de passe réinitialisé</h1>
                             <p class='success'>Votre mot de passe a été réinitialisé avec succès !</p>
-                            <p><a href='index.php?action=login' class='btn'>Se connecter</a></p>",
-                            "Succès - NETVOD"
-                        );
+                            <p><a href='index.php?action=login' class='btn'>Se connecter</a></p>";
                     } else {
                         $error = "Erreur lors de la réinitialisation du mot de passe.";
                     }
@@ -95,6 +88,7 @@ class ResetPasswordAction
         </form>
         ";
         
-        return Layout::render($html, "Nouveau mot de passe - NETVOD");
+        $this->title = "Nouveau mot de passe - NETVOD";
+        return $html;
     }
 }

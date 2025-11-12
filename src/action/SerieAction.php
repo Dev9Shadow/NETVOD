@@ -6,10 +6,11 @@ use netvod\repository\SerieRepository;
 use netvod\repository\EpisodeRepository;
 use netvod\repository\CommentRepository;
 use netvod\repository\ProgressRepository;
-use netvod\renderer\Layout;
+ 
 
 class SerieAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -20,10 +21,8 @@ class SerieAction
         $serie = $serieRepo->findById((int)$id);
 
         if (!$serie) {
-            return Layout::render(
-                "<h1>Série non trouvée</h1><p><a href='index.php?action=catalogue'>Retour au catalogue</a></p>",
-                "Erreur - NETVOD"
-            );
+            $this->title = "Erreur - NETVOD";
+            return "<h1>Série non trouvée</h1><p><a href='index.php?action=catalogue'>Retour au catalogue</a></p>";
         }
 
         // Récupérer les épisodes
@@ -149,6 +148,7 @@ class SerieAction
 
         $html .= "<p style='margin-top: 30px;'><a href='index.php?action=catalogue' class='btn btn-secondary'>Retour au catalogue</a></p>";
 
-        return Layout::render($html, $titre . " - NETVOD");
+        $this->title = $titre . " - NETVOD";
+        return $html;
     }
 }

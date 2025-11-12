@@ -5,20 +5,21 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\ProgressRepository;
-use netvod\renderer\Layout;
+ 
 
 class ResumeAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
         if (session_status() === PHP_SESSION_NONE) session_start();
 
         if (!isset($_SESSION['user_id'])) {
-            $content = "<h1>Reprendre</h1>
+            $this->title = "Reprendre - NETVOD";
+            return "<h1>Reprendre</h1>
                         <p>Vous devez être connecté pour voir vos séries en cours.</p>
                         <p><a class='btn' href='index.php?action=login'>Se connecter</a></p>";
-            return Layout::render($content, "Reprendre - NETVOD");
         }
 
         $repo  = new ProgressRepository();
@@ -29,7 +30,8 @@ class ResumeAction
         if (empty($rows)) {
             $html .= "<p>Aucune série en cours pour l’instant.</p>
                       <p><a class='btn' href='index.php?action=catalogue'>Aller au catalogue</a></p>";
-            return Layout::render($html, "Reprendre - NETVOD");
+            $this->title = "Reprendre - NETVOD";
+            return $html;
         }
 
         $html .= "<div class='resume-list'>";
@@ -65,6 +67,7 @@ class ResumeAction
         }
         $html .= "</div>";
 
-        return Layout::render($html, "Reprendre - NETVOD");
+        $this->title = "Reprendre - NETVOD";
+        return $html;
     }
 }

@@ -3,10 +3,11 @@ namespace netvod\action;
 
 use netvod\repository\ConnectionFactory;
 use netvod\repository\UserRepository;
-use netvod\renderer\Layout;
+ 
 
 class LoginAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -63,6 +64,7 @@ class LoginAction
             </p>
         ";
         
-        return Layout::render($html, "Connexion - NETVOD");
+        $this->title = "Connexion - NETVOD";
+        return $html;
     }
 }

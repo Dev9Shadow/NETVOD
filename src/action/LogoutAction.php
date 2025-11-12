@@ -1,10 +1,9 @@
 <?php
 namespace netvod\action;
 
-use netvod\renderer\Layout;
-
 class LogoutAction
 {
+    public string $title = '';
     public function execute(): string
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -24,6 +23,7 @@ class LogoutAction
             </div>
         ";
         
-        return Layout::render($html, "Déconnexion - NETVOD");
+        $this->title = "Déconnexion - NETVOD";
+        return $html;
     }
 }

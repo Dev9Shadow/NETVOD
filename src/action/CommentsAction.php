@@ -4,10 +4,11 @@ namespace netvod\action;
 use netvod\repository\ConnectionFactory;
 use netvod\repository\SerieRepository;
 use netvod\repository\CommentRepository;
-use netvod\renderer\Layout;
+ 
 
 class CommentsAction
 {
+    public string $title = '';
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
@@ -18,10 +19,8 @@ class CommentsAction
         $serie = $serieRepo->findById((int)$id);
         
         if (!$serie) {
-            return Layout::render(
-                "<h1>Série non trouvée</h1><p><a href='index.php?action=catalogue'>Retour au catalogue</a></p>",
-                "Erreur - NETVOD"
-            );
+            $this->title = "Erreur - NETVOD";
+            return "<h1>Série non trouvée</h1><p><a href='index.php?action=catalogue'>Retour au catalogue</a></p>";
         }
         
         $commentRepo = new CommentRepository();
@@ -60,6 +59,7 @@ class CommentsAction
             }
         }
         
-        return Layout::render($html, "Commentaires - {$titre} - NETVOD");
+        $this->title = "Commentaires - {$titre} - NETVOD";
+        return $html;
     }
 }
