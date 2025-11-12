@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS user (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     nom VARCHAR(100) DEFAULT '',
-    prenom VARCHAR(100) DEFAULT ''
+    prenom VARCHAR(100) DEFAULT '',
     age INT DEFAULT NULL,
-    genre_prefere VARCHAR(100) DEFAULT NULL;
+    genre_prefere VARCHAR(100) DEFAULT NULL
 );
 
 -- ---------------------------------------------------------
