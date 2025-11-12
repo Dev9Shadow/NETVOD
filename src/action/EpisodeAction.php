@@ -8,18 +8,26 @@ use netvod\repository\EpisodeRepository;
 use netvod\repository\EpisodeVueRepository;
 use netvod\repository\ProgressRepository;
 use netvod\repository\CommentRepository;
-use netvod\repository\AlreadyWatchedRepository;
 use netvod\renderer\EpisodeRenderer;
 use netvod\renderer\Layout;
 
 class EpisodeAction
 {
+    private function pdo()
+    {
+        // Compat : certaines bases ont getConnection(), d’autres makeConnection()
+        if (method_exists(ConnectionFactory::class, 'getConnection')) {
+            return ConnectionFactory::getConnection();
+        }
+        return ConnectionFactory::makeConnection();
+    }
+
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        /* A) POST : ajout d’un commentaire (depuis la page épisode) */
+        /* A) POST : ajout commentaire (form sur la page épisode) */
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['do']) && $_POST['do'] === 'add_comment') {
 
@@ -46,36 +54,56 @@ class EpisodeAction
             exit;
         }
 
-        /* B) POST AJAX : sauvegarde position / marquer vu (reprendre auto + déjà visionnées) */
-        if ($_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_SESSION['user_id'])
-            && isset($_POST['episode_id'])) {
-
+        /* B) POST AJAX : autosave position + “vu” + gestion déjà visionnée */
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id']) && isset($_POST['episode_id'])) {
             $idUser = (int) $_SESSION['user_id'];
             $idEp   = (int) ($_POST['episode_id'] ?? 0);
             $pos    = max(0, (int) ($_POST['position_sec'] ?? 0));
             $vu     = isset($_POST['vu']) ? 1 : 0;
 
             if ($idEp > 0) {
-                // Enregistrer la position + état vu dans episode_vue
                 $vueRepo = new EpisodeVueRepository();
                 $vueRepo->upsert($idUser, $idEp, $pos, $vu);
 
-                // Si l'épisode est terminé -> maj "reprendre" + bascule en "déjà visionnées" si tout vu
+                // Si l’épisode est terminé -> MAJ "reprendre" et peut-être "déjà visionnées"
                 if ($vu === 1) {
                     $epRepo  = new EpisodeRepository();
                     $episode = $epRepo->findById($idEp);
+
                     if ($episode) {
-                        // maj progress (reprendre)
+                        // 1) Reprendre : mémoriser dernier épisode
                         $progRepo = new ProgressRepository();
                         $progRepo->upsert($idUser, (int)$episode->id_serie, $idEp);
 
-                        // vérifier si la série est complètement vue
-                        $aw = new AlreadyWatchedRepository();
-                        if ($aw->isComplete($idUser, (int)$episode->id_serie)) {
-                            $aw->mark($idUser, (int)$episode->id_serie);
-                            // (optionnel) on retire la série de progress
-                            $aw->clearProgress($idUser, (int)$episode->id_serie);
+                        // 2) Déjà visionnées : si tous les épisodes de la série sont vus
+                        $pdo = $this->pdo();
+                        $idSerie = (int)$episode->id_serie;
+
+                        // nb total d'épisodes de la série
+                        $st = $pdo->prepare("SELECT COUNT(*) FROM episode WHERE id_serie = :s");
+                        $st->execute([':s' => $idSerie]);
+                        $total = (int) $st->fetchColumn();
+
+                        // nb d'épisodes vus (vu=1) par l'utilisateur pour cette série
+                        $sqlVu = "SELECT COUNT(*) 
+                                  FROM episode_vue ev 
+                                  JOIN episode e ON e.id = ev.id_episode
+                                  WHERE ev.id_user = :u AND ev.vu = 1 AND e.id_serie = :s";
+                        $st2 = $pdo->prepare($sqlVu);
+                        $st2->execute([':u' => $idUser, ':s' => $idSerie]);
+                        $vus = (int) $st2->fetchColumn();
+
+                        if ($total > 0 && $vus >= $total) {
+                            // marquer dans already_watched (idempotent)
+                            $pdo->prepare(
+                                "INSERT IGNORE INTO already_watched (id_user, id_serie, marked_at)
+                                 VALUES (:u, :s, NOW())"
+                            )->execute([':u' => $idUser, ':s' => $idSerie]);
+
+                            // optionnel : retirer la série de progress
+                            $pdo->prepare(
+                                "DELETE FROM progress WHERE id_user = :u AND id_serie = :s"
+                            )->execute([':u' => $idUser, ':s' => $idSerie]);
                         }
                     }
                 }
@@ -100,12 +128,12 @@ class EpisodeAction
             return Layout::render($content, "Épisode - NETVOD");
         }
 
-        // Préfixe pour trouver la vidéo dans /videos
+        // Préfix "videos/" si besoin
         if (!empty($ep->file) && substr((string)$ep->file, 0, 7) !== 'videos/') {
             $ep->file = 'videos/' . $ep->file;
         }
 
-        // Reprise depuis la dernière position si connecté
+        // Reprise à la dernière position
         $resumeFrom = 0;
         $logged     = isset($_SESSION['user_id']);
         if ($logged) {
