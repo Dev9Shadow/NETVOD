@@ -10,7 +10,6 @@ class Comment
     public ?string $contenu = null;
     public ?string $created_at = null;
     
-    // Propriétés pour les jointures
     public ?string $user_nom = null;
     public ?string $user_prenom = null;
 }

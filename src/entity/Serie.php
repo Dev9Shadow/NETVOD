@@ -10,9 +10,9 @@ class Serie
     public ?int $annee = null;         
     public ?string $date_ajout = null; 
     public ?string $genre = null;
-    public ?int $id_public_cible = null;  // Clé étrangère vers public_cible
+    public ?int $id_public_cible = null;    
     
-    // Propriété pour stocker l'objet PublicCible (chargé par jointure)
+
     public ?PublicCible $publicCible = null;
 
     public function __toString(): string
