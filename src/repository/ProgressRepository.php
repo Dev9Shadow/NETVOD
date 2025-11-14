@@ -29,7 +29,7 @@ class ProgressRepository
         return $v!==false ? (int)$v : null;
     }
 
-    /** Une ligne par série, triée par dernière activité (episode_vue.updated_at desc) */
+    /** Une ligne par série, triée par dernière activité */
     public function listForUser(int $idUser): array {
         $pdo = $this->pdo();
         $sql = "SELECT

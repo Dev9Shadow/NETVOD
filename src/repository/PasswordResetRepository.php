@@ -15,7 +15,7 @@ class PasswordResetRepository
         // Générer un token aléatoire unique
         $token = bin2hex(random_bytes(32));
 
-        // Expiration dans 1 heure côté MySQL
+        // Expiration dans 1 heure 
         $stmt = $pdo->prepare(
             "INSERT INTO password_reset (user_id, token, created_at, expires_at, used) 
             VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 HOUR), 0)"
@@ -60,7 +60,7 @@ class PasswordResetRepository
     }
     
     /**
-     * Nettoyer les tokens expirés (à appeler périodiquement)
+     * Nettoyer les tokens expirés 
      */
     public function cleanExpiredTokens(): int
     {

@@ -68,9 +68,6 @@ class FavoriRepository
         return (int)$stmt->fetchColumn();
     }
 
-    /**
-     * Récupérer les IDs des séries favorites d'un utilisateur
-     */
     public function getUserFavoriteIds(int $userId): array
     {
         $pdo = ConnectionFactory::getConnection();

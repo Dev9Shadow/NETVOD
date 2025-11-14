@@ -9,7 +9,6 @@ class CommentRepository
 {
     private function pdo(): PDO
     {
-        // Compatible avec ton ConnectionFactory (getConnection OU makeConnection)
         if (method_exists(ConnectionFactory::class, 'getConnection')) {
             return ConnectionFactory::getConnection();
         }
@@ -31,7 +30,7 @@ class CommentRepository
         ]);
     }
 
-    /** Liste des commentaires d’une série (avec nom/prénom de l’auteur) */
+    /** Liste des commentaires d’une série  */
     public function findBySerie(int $idSerie): array
     {
         $pdo = $this->pdo();
@@ -46,7 +45,7 @@ class CommentRepository
         return array_map(static fn($r) => (object)$r, $rows);
     }
 
-    /** Note moyenne sur une série (arrondie à 0,1) */
+    /** Note moyenne sur une série */
     public function getAverageNote(int $idSerie): ?float
     {
         $pdo = $this->pdo();

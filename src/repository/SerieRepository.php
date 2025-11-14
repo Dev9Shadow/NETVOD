@@ -159,7 +159,6 @@ class SerieRepository
     {
         $pdo = ConnectionFactory::getConnection();
         
-        // Préparer la recherche (insensible à la casse)
         $searchTerm = '%' . $keywords . '%';
         
         $query = "SELECT s.*, pc.nom as public_nom 

@@ -37,7 +37,6 @@ class AlreadyWatchedRepository
         return $seen >= $total;
     }
 
-    /** Inscrit la série en “déjà visionnées” si pas déjà */
     public function mark(int $userId, int $serieId): void
     {
         $pdo = $this->pdo();
@@ -48,7 +47,7 @@ class AlreadyWatchedRepository
         $st->execute([':u' => $userId, ':s' => $serieId]);
     }
 
-    /** Liste des séries déjà visionnées pour l’utilisateur (retourne des lignes de la table serie) */
+    /** Liste des séries déjà visionnées pour l’utilisateur */
     public function listForUser(int $userId): array
     {
         $pdo = $this->pdo();
@@ -63,7 +62,6 @@ class AlreadyWatchedRepository
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    /** (optionnel) Nettoie progress quand la série est finie */
     public function clearProgress(int $userId, int $serieId): void
     {
         $pdo = $this->pdo();
