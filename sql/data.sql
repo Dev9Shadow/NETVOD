@@ -1,3 +1,9 @@
+INSERT INTO user (email, password_hash, nom, prenom) VALUES
+('marie.dubois@email.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLM', 'Dubois', 'Marie'),
+('thomas.martin@email.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLM', 'Martin', 'Thomas'),
+('sophie.bernard@email.com', '$2y$10$abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLM', 'Bernard', 'Sophie');
+
+
 INSERT INTO public_cible (id, nom) VALUES 
     (1, 'Tout public'),
     (2, '6+'),
@@ -38,3 +44,22 @@ INSERT INTO episode (id, numero, titre, resume, duree, file, id_serie) VALUES
 (19, 3, 'surf amitié', 'En fait la planche n\'avait pas été volée, c\'est Jim, le meilleur ami de Jack, qui lui avait fait une blague. Les deux amis partagent une menthe à l\'eau pour célébrer leur amitié sans faille.', 11, 'surf.mp4', 5),
 (20, 1, 'Ça roule, ça roule', 'Ça roule, ça roule toute la nuit. Jack fonce dans sa camionnette pour rejoindre le spot de surf.', 27, 'cars-by-night.mp4', 6),
 (21, 2, 'Ça roule, ça roule toujours', 'Ça roule la nuit, comme chaque nuit. Jim fonce avec son taxi, pour rejoindre Jack à la plage. De l\'eau a coulé sous les ponts. Le mystère du Lac trouve sa solution alors que les chevaux sont de retour après une virée sur l\'Etoile Noire.', 27, 'cars-by-night.mp4', 6);
+
+
+INSERT INTO comment (id_user, id_serie, note, contenu, created_at) VALUES
+(2, 2, 5, 'Nostalgie garantie ! Cette série me rappelle mon enfance. Les décors sont magnifiques.', '2024-10-20 11:15:22'),
+(3, 2, 4, 'Une belle série dramatique avec de belles émotions. Parfois un peu lente mais ça vaut le coup.', '2024-10-22 16:48:10'),
+(4, 2, 5, 'Coup de cœur absolu ! L''histoire est touchante et les personnages attachants.', '2024-10-25 20:33:47'),
+(3, 3, 4, 'Documentaire fascinant sur la vie des chevaux. Très instructif et bien réalisé.', '2024-09-12 13:25:18'),
+(4, 3, 5, 'Magnifique ! Les images sont à couper le souffle. Un must pour les amoureux des animaux.', '2024-09-14 10:52:39'),
+(2, 3, 3, 'Intéressant mais un peu répétitif. Certains épisodes auraient pu être plus courts.', '2024-09-16 19:07:21'),
+(1, 4, 5, 'Comédie rafraîchissante ! Parfait pour se détendre après une longue journée. Les dialogues sont hilarants.', '2024-08-05 21:15:44'),
+(3, 4, 4, 'Très drôle, personnages attachants. Quelques gags tombent un peu à plat mais dans l''ensemble c''est réussi.', '2024-08-07 14:22:09'),
+(2, 4, 5, 'J''adore cette série ! L''ambiance estivale met de bonne humeur. Hâte de voir la suite !', '2024-08-10 17:38:52'),
+(2, 5, 5, 'Série sportive captivante ! On ressent vraiment l''adrénaline des compétitions.', '2024-07-18 12:44:31'),
+(1, 5, 4, 'Bon scénario et bons acteurs. Parfois un peu cliché mais ça reste très regardable.', '2024-07-20 09:18:56'),
+(3, 5, 5, 'Inspirant et motivant ! Cette série donne envie de se dépasser. Bravo aux créateurs.', '2024-07-22 15:50:13'),
+(3, 6, 4, 'Ambiance polaire réussie. Le polar est bien mené même si on devine certains éléments.', '2024-06-30 20:12:27'),
+(2, 6, 5, 'Excellent thriller ! Les scènes nocturnes sont magnifiquement filmées. Suspense au rendez-vous.', '2024-07-02 11:27:45'),
+(4, 6, 4, 'Bonne série avec une atmosphère unique. Quelques moments un peu longs mais j''ai bien aimé.', '2024-07-05 16:41:08');
+

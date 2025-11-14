@@ -220,7 +220,7 @@ button:active, .btn:active {
 .hero {
     text-align: center;
     padding: 60px 20px;
-    background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+    background: #000;
     border-radius: 10px;
     margin-bottom: 40px;
 }
@@ -309,7 +309,7 @@ button:active, .btn:active {
 }
 
 .search-btn {
-    background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+    background: #b20710;
     color: #ffffff;
     height: 50px;
     width: 160px;
@@ -329,7 +329,7 @@ button:active, .btn:active {
 .search-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 5px 20px rgba(229, 9, 20, 0.4);
-    background: linear-gradient(135deg, #f40612 0%, #c0080f 100%);
+    background: #c0080f;
 }
 
 .search-results-info {
@@ -584,7 +584,7 @@ button:active, .btn:active {
 .no-episodes, .no-favorites-home {
     text-align: center;
     padding: 60px 40px;
-    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    background: #0a0a0a;
     border-radius: 12px;
     border: 2px dashed #333;
 }
