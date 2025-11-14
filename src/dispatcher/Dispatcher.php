@@ -14,7 +14,6 @@ use netvod\action\RegisterAction;
 use netvod\action\ResetPasswordAction;
 use netvod\action\ResumeAction;
 use netvod\action\SerieAction;
-use netvod\action\TestdbAction;
 use netvod\action\ToggleFavoriAction;
 use netvod\auth\AuthnProvided;
 use netvod\auth\Authz;
@@ -76,11 +75,7 @@ class Dispatcher
             case 'comments':
                 $action = new CommentsAction();
                 break;
-            case 'testdb':
-                $action = new TestdbAction();
-                break;
             case 'togglefavori':
-                // Action "raw" (JSON), on délègue sans layout
                 (new ToggleFavoriAction())->execute();
                 return;
             case 'default':
@@ -99,13 +94,6 @@ class Dispatcher
             }
             $title = $this->extractTitle($action) ?? $this->defaultTitle($actionName);
             $this->renderPage($html, $title);
-            return;
-        }
-
-        if (is_array($result)) {
-            $content = $result['content'] ?? '';
-            $title   = $result['title'] ?? ($this->extractTitle($action) ?? $this->defaultTitle($actionName));
-            $this->renderPage($content, $title);
             return;
         }
 
@@ -234,7 +222,6 @@ JS;
             'favoris' => 'Mes Favoris - NETVOD',
             'resume' => 'Reprendre - NETVOD',
             'comments' => 'Commentaires - NETVOD',
-            'testdb' => 'Test DB - NETVOD',
             default => 'NETVOD',
         };
     }

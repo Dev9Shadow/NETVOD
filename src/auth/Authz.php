@@ -13,7 +13,6 @@ class Authz
             'catalogue',
             'serie',
             'logout',
-            'testdb',
             'forgotpassword',
             'resetpassword',
         ];

@@ -32,9 +32,7 @@ HTML;
             $sql = "
                 SELECT s.id              AS serie_id,
                        s.titre           AS serie_titre,
-                       s.descriptif      AS serie_desc,
                        s.img             AS serie_img,
-                       s.annee           AS serie_annee,
                        p.last_episode_id AS ep_id
                 FROM progress p
                 JOIN serie s ON s.id = p.id_serie
@@ -53,8 +51,6 @@ HTML;
                 foreach ($rows as $r) {
                     $sid  = (int)$r['serie_id'];
                     $stt  = htmlspecialchars($r['serie_titre'] ?? 'Sans titre', ENT_QUOTES, 'UTF-8');
-                    $sd   = htmlspecialchars($r['serie_desc']  ?? 'Pas de description', ENT_QUOTES, 'UTF-8');
-                    $sa   = htmlspecialchars((string)($r['serie_annee'] ?? 'N/A'), ENT_QUOTES, 'UTF-8');
                     $img  = 'images/' . (($r['serie_img'] ?? '') !== '' ? $r['serie_img'] : 'default.jpg');
                     $epId = (int)$r['ep_id'];
 
@@ -65,7 +61,6 @@ HTML;
                         </div>
                         <div class='serie-info'>
                             <h3>{$stt}</h3>
-                            <p>{$sd}</p>
                             <div class='actions'
                                  style='display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:8px'>
                                 <a class='btn btn-play'
@@ -75,7 +70,6 @@ HTML;
                                    style='display:block;width:auto'
                                    href='index.php?action=serie&id={$sid}'>Voir la série</a>
                             </div>
-                            <small>Année : {$sa}</small>
                         </div>
                     </div>";
                 }
