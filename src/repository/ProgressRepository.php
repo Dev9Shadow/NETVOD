@@ -7,13 +7,8 @@ use PDO;
 
 class ProgressRepository
 {
-    private function pdo(): PDO {
-        if (method_exists(ConnectionFactory::class, 'getConnection')) return ConnectionFactory::getConnection();
-        return ConnectionFactory::makeConnection();
-    }
-
     public function upsert(int $idUser, int $idSerie, int $lastEpisodeId): void {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $sql = "INSERT INTO progress (id_user,id_serie,last_episode_id,updated_at)
                 VALUES (:u,:s,:e,CURRENT_TIMESTAMP)
                 ON DUPLICATE KEY UPDATE last_episode_id=:e2, updated_at=CURRENT_TIMESTAMP";
@@ -22,7 +17,7 @@ class ProgressRepository
     }
 
     public function get(int $idUser, int $idSerie): ?int {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $st = $pdo->prepare("SELECT last_episode_id FROM progress WHERE id_user=:u AND id_serie=:s");
         $st->execute([':u'=>$idUser, ':s'=>$idSerie]);
         $v = $st->fetchColumn();
@@ -31,7 +26,7 @@ class ProgressRepository
 
     /** Une ligne par série, triée par dernière activité */
     public function listForUser(int $idUser): array {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $sql = "SELECT
                   ev.id_episode AS ep_id,
                   ev.position_sec,

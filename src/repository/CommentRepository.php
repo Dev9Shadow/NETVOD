@@ -7,18 +7,10 @@ use PDO;
 
 class CommentRepository
 {
-    private function pdo(): PDO
-    {
-        if (method_exists(ConnectionFactory::class, 'getConnection')) {
-            return ConnectionFactory::getConnection();
-        }
-        return ConnectionFactory::makeConnection();
-    }
-
     /** Ajout d’un commentaire pour une série */
     public function add(int $idUser, int $idSerie, int $note, string $contenu): void
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $sql = "INSERT INTO comment (id_user, id_serie, note, contenu, created_at)
                 VALUES (:u, :s, :n, :c, NOW())";
         $st = $pdo->prepare($sql);
@@ -33,7 +25,7 @@ class CommentRepository
     /** Liste des commentaires d’une série  */
     public function findBySerie(int $idSerie): array
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $sql = "SELECT c.*, u.nom AS user_nom, u.prenom AS user_prenom
                 FROM comment c
                 JOIN user u ON u.id = c.id_user
@@ -48,7 +40,7 @@ class CommentRepository
     /** Note moyenne sur une série */
     public function getAverageNote(int $idSerie): ?float
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $st = $pdo->prepare("SELECT AVG(note) FROM comment WHERE id_serie = :s");
         $st->execute([':s' => $idSerie]);
         $val = $st->fetchColumn();
@@ -58,7 +50,7 @@ class CommentRepository
     /** Nombre de commentaires sur une série */
     public function countComments(int $idSerie): int
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $st = $pdo->prepare("SELECT COUNT(*) FROM comment WHERE id_serie = :s");
         $st->execute([':s' => $idSerie]);
         return (int)$st->fetchColumn();

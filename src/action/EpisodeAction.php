@@ -15,11 +15,9 @@ class EpisodeAction
     public string $title = '';
     private function pdo()
     {
-        // Compat : certaines bases ont getConnection(), d’autres makeConnection()
-        if (method_exists(ConnectionFactory::class, 'getConnection')) {
-            return ConnectionFactory::getConnection();
-        }
-        return ConnectionFactory::makeConnection();
+        // Compat : certaines bases ont getConnection(), d’autres getConnection()
+        
+        return ConnectionFactory::getConnection();
     }
 
     public function execute(): string

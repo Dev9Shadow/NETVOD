@@ -7,17 +7,10 @@ use PDO;
 
 class AlreadyWatchedRepository
 {
-    private function pdo(): PDO {
-        if (method_exists(ConnectionFactory::class, 'getConnection')) {
-            return ConnectionFactory::getConnection();
-        }
-        return ConnectionFactory::makeConnection();
-    }
-
     /** Vrai si l'utilisateur a fini tous les épisodes de la série */
     public function isComplete(int $userId, int $serieId): bool
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
 
         $q1 = $pdo->prepare('SELECT COUNT(*) FROM episode WHERE id_serie = :s');
         $q1->execute([':s' => $serieId]);
@@ -39,7 +32,7 @@ class AlreadyWatchedRepository
 
     public function mark(int $userId, int $serieId): void
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $st = $pdo->prepare(
             'INSERT IGNORE INTO already_watched (id_user, id_serie, marked_at) 
              VALUES (:u, :s, CURRENT_TIMESTAMP)'
@@ -50,7 +43,7 @@ class AlreadyWatchedRepository
     /** Liste des séries déjà visionnées pour l’utilisateur */
     public function listForUser(int $userId): array
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $st = $pdo->prepare(
             'SELECT s.*
                FROM already_watched aw
@@ -64,7 +57,7 @@ class AlreadyWatchedRepository
 
     public function clearProgress(int $userId, int $serieId): void
     {
-        $pdo = $this->pdo();
+        $pdo = ConnectionFactory::getConnection();
         $pdo->prepare('DELETE FROM progress WHERE id_user = :u AND id_serie = :s')
             ->execute([':u' => $userId, ':s' => $serieId]);
     }

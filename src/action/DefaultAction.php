@@ -11,11 +11,9 @@ class DefaultAction
     public string $title = '';
     private function pdo()
     {
-        // Compat cours : certaines bases ont getConnection(), d’autres makeConnection()
-        if (method_exists(ConnectionFactory::class, 'getConnection')) {
-            return ConnectionFactory::getConnection();
-        }
-        return ConnectionFactory::makeConnection();
+        // Compat cours : certaines bases ont getConnection(), d’autres getConnection()
+        
+        return ConnectionFactory::getConnection();
     }
 
     public function execute(): string
