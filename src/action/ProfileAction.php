@@ -110,10 +110,9 @@ class ProfileAction
             $html .= "<p class='success'>" . htmlspecialchars($pwdSuccess) . "</p>";
         }
 
-        // Container 2 colonnes
         $html .= "<div class='profile-container'>";
 
-        // Colonne gauche - Informations personnelles
+        // Colonne gauche - Info perso
         $ageValue = $user->age !== null ? htmlspecialchars((string)$user->age) : '';
         $genreValue = htmlspecialchars((string)($user->genre_prefere ?? ''));
         
@@ -160,7 +159,7 @@ class ProfileAction
         </div>
         ";
 
-        // Colonne droite - Mot de passe
+        // Colonne droite - Mdp
         $html .= "
         <div class='profile-section'>
             <h2>Changer le mot de passe</h2>
@@ -183,9 +182,9 @@ class ProfileAction
         </div>
         ";
 
-        $html .= "</div>"; // Fin profile-container
+        $html .= "</div>"; 
 
-        // Section déconnexion en dessous
+        // Déconnexion en dessous
         $html .= "
         <section class='profile-section' style='margin-top: 40px; border-color:#e50914;'>
             <h2>Session</h2>

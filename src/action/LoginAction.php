@@ -32,12 +32,10 @@ class LoginAction
                 header('Location: index.php');
                 exit;
             } else {
-                // Échec de connexion
                 $error = "Email ou mot de passe incorrect.";
             }
         }
         
-        // Formulaire de connexion
         $html = "<h1>Connexion</h1>";
         
         if (isset($error)) {

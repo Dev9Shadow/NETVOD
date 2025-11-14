@@ -1,8 +1,6 @@
 <?php
 namespace netvod\renderer;
 
-use netvod\entity\Serie;
-
 class CatalogueRenderer
 {
     public static function render(array $series): string

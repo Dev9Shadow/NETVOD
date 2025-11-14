@@ -5,9 +5,6 @@ use PDO;
 
 class FavoriRepository
 {
-    /**
-     * Ajouter une série aux favoris
-     */
     public function add(int $userId, int $serieId): bool
     {
         try {
@@ -20,9 +17,6 @@ class FavoriRepository
         }
     }
 
-    /**
-     * Retirer une série des favoris
-     */
     public function remove(int $userId, int $serieId): bool
     {
         $pdo = ConnectionFactory::getConnection();
@@ -30,9 +24,6 @@ class FavoriRepository
         return $stmt->execute([$userId, $serieId]);
     }
 
-    /**
-     * Vérifier si une série est en favori
-     */
     public function isFavorite(int $userId, int $serieId): bool
     {
         $pdo = ConnectionFactory::getConnection();
@@ -41,9 +32,6 @@ class FavoriRepository
         return $stmt->fetchColumn() > 0;
     }
 
-    /**
-     * Récupérer toutes les séries favorites d'un utilisateur
-     */
     public function getUserFavorites(int $userId): array
     {
         $pdo = ConnectionFactory::getConnection();
@@ -57,9 +45,6 @@ class FavoriRepository
         return $stmt->fetchAll();
     }
 
-    /**
-     * Compter le nombre de favoris d'un utilisateur
-     */
     public function countUserFavorites(int $userId): int
     {
         $pdo = ConnectionFactory::getConnection();

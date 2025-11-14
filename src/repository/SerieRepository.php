@@ -152,9 +152,6 @@ class SerieRepository
         return (int)($result['total'] ?? 0);
     }
 
-    /**
-     * Rechercher des séries par mots-clés dans le titre ou le descriptif
-     */
     public function search(string $keywords): array
     {
         $pdo = ConnectionFactory::getConnection();

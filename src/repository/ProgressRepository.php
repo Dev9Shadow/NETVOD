@@ -24,7 +24,6 @@ class ProgressRepository
         return $v!==false ? (int)$v : null;
     }
 
-    /** Une ligne par série, triée par dernière activité */
     public function listForUser(int $idUser): array {
         $pdo = ConnectionFactory::getConnection();
         $sql = "SELECT

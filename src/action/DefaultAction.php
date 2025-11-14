@@ -9,12 +9,6 @@ use netvod\repository\SerieRepository;
 class DefaultAction
 {
     public string $title = '';
-    private function pdo()
-    {
-        // Compat cours : certaines bases ont getConnection(), d’autres getConnection()
-        
-        return ConnectionFactory::getConnection();
-    }
 
     public function execute(): string
     {
@@ -29,9 +23,9 @@ class DefaultAction
 </div>
 HTML;
 
-        /* ------------------------------ Reprendre ------------------------------ */
+        // Reprendre
         if (isset($_SESSION['user_id'])) {
-            $pdo    = $this->pdo();
+            $pdo = ConnectionFactory::getConnection();
             $userId = (int) $_SESSION['user_id'];
 
             // Séries en cours = présentes dans progress et non déjà vues
@@ -89,7 +83,7 @@ HTML;
             }
         }
 
-        /* ------------------------------ Mes Favoris ------------------------------ */
+        // Mes Favoris
         if (isset($_SESSION['user_id'])) {
             $userId     = (int)$_SESSION['user_id'];
             $favoriRepo = new FavoriRepository();
@@ -138,9 +132,9 @@ HTML;
             }
         }
 
-        /* ------------------------------ Déjà visionnées ------------------------------ */
+        // Déjà visionnées
         if (isset($_SESSION['user_id'])) {
-            $pdo    = $this->pdo();
+            $pdo = ConnectionFactory::getConnection();
             $userId = (int) $_SESSION['user_id'];
 
             $sql = "SELECT s.id, s.titre, s.descriptif, s.img, s.annee

@@ -39,7 +39,6 @@ class Dispatcher
             exit;
         }
 
-        // Routing via switch sur action
         switch ($actionName) {
             case 'catalogue':
                 $action = new CatalogueAction();
@@ -92,20 +91,17 @@ class Dispatcher
 
         $result = $action->execute();
 
-        // Support compat: si l'action renvoie du HTML complet, l'afficher tel quel
         if (is_string($result)) {
             $html = trim($result);
             if ($html !== '' && (str_starts_with($html, '<!DOCTYPE') || str_starts_with($html, '<html'))) {
                 echo $html;
                 return;
             }
-            // Sinon, l'envelopper avec le layout interne
             $title = $this->extractTitle($action) ?? $this->defaultTitle($actionName);
             $this->renderPage($html, $title);
             return;
         }
 
-        // Nouveau format: ['content' => string, 'title' => string]
         if (is_array($result)) {
             $content = $result['content'] ?? '';
             $title   = $result['title'] ?? ($this->extractTitle($action) ?? $this->defaultTitle($actionName));
@@ -113,7 +109,6 @@ class Dispatcher
             return;
         }
 
-        // Fallback
         $this->renderPage('', $this->defaultTitle($actionName));
     }
 

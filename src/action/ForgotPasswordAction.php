@@ -28,10 +28,10 @@ class ForgotPasswordAction
                     $resetRepo = new PasswordResetRepository();
                     $token = $resetRepo->createToken($user->id);
                     
-                    // Générer l'URL de réinitialisation
+                    // URL de réinitialisation
                     $resetUrl = "http://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']) . "/index.php?action=resetpassword&token=" . $token;
                     
-                    // TODO: Envoyer l'email (pour l'instant, on affiche juste l'URL)
+                    // Affiche l'url
                     $success = "Un lien de réinitialisation a été généré. <br><br>
                                 <strong>URL de réinitialisation :</strong><br>
                                 <a href='{$resetUrl}' style='color: #e50914; word-break: break-all;'>{$resetUrl}</a><br><br>

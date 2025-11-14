@@ -7,7 +7,6 @@ use PDO;
 
 class CommentRepository
 {
-    /** Ajout d’un commentaire pour une série */
     public function add(int $idUser, int $idSerie, int $note, string $contenu): void
     {
         $pdo = ConnectionFactory::getConnection();
@@ -22,7 +21,6 @@ class CommentRepository
         ]);
     }
 
-    /** Liste des commentaires d’une série  */
     public function findBySerie(int $idSerie): array
     {
         $pdo = ConnectionFactory::getConnection();
@@ -37,7 +35,6 @@ class CommentRepository
         return array_map(static fn($r) => (object)$r, $rows);
     }
 
-    /** Note moyenne sur une série */
     public function getAverageNote(int $idSerie): ?float
     {
         $pdo = ConnectionFactory::getConnection();
@@ -47,7 +44,6 @@ class CommentRepository
         return $val !== false ? round((float)$val, 1) : null;
     }
 
-    /** Nombre de commentaires sur une série */
     public function countComments(int $idSerie): int
     {
         $pdo = ConnectionFactory::getConnection();

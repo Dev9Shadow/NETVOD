@@ -58,7 +58,7 @@ class CatalogueAction
             }
         }
 
-        // Sorting
+        // Trie
         if ($sortNote === 'note_desc' || $sortNote === 'note_asc') {
             usort($series, function ($a, $b) use ($avgNotes, $sortNote) {
                 $na = $avgNotes[$a->id] ?? 0.0;
@@ -107,7 +107,7 @@ class CatalogueAction
             }
         }
 
-        // View
+        // Vue
         $html = "<h1>Catalogue des series</h1>";
 
         $searchValue = htmlspecialchars($searchQuery);
@@ -128,10 +128,8 @@ class CatalogueAction
 
         $html .= "      </div>";
 
-        // Controls row
         $html .= "<div class='catalogue-controls'>";
 
-        // Left: filters
         $html .= "<div class='filters-left'>";
         // Genre
         $html .= "<select name='genre' aria-label='Filtrer par genre'>";
@@ -153,7 +151,6 @@ class CatalogueAction
         $html .= "</select>";
         $html .= "</div>";
 
-        // Middle: sort
         $html .= "<div class='sort-middle'>";
         $html .= "<select name='sort' aria-label='Trier le catalogue'>";
         $html .= "<option value='titre_asc'" . ($sort === 'titre_asc' ? " selected" : "") . ">Titre A-Z</option>";
@@ -165,7 +162,6 @@ class CatalogueAction
         $html .= "</select>";
         $html .= "</div>";
 
-        // Right: rating sort
         $html .= "<div class='rating-right'>";
         $html .= "<select name='sort_note' aria-label='Trier par note moyenne'>";
         $html .= "<option value=''" . ($sortNote === '' ? " selected" : "") . ">Ne pas trier par note</option>";
@@ -174,10 +170,9 @@ class CatalogueAction
         $html .= "</select>";
         $html .= "</div>";
 
-        // Apply button
         $html .= "<button type='submit' class='search-btn'>Appliquer</button>";
 
-        $html .= "</div>"; // .catalogue-controls
+        $html .= "</div>"; 
 
         $html .= "    </form>
                   </div>";

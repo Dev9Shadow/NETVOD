@@ -13,19 +13,13 @@ use netvod\renderer\EpisodeRenderer;
 class EpisodeAction
 {
     public string $title = '';
-    private function pdo()
-    {
-        // Compat : certaines bases ont getConnection(), d’autres getConnection()
-        
-        return ConnectionFactory::getConnection();
-    }
-
+    
     public function execute(): string
     {
         ConnectionFactory::setConfig(__DIR__ . '/../../config/db.config.ini');
         if (session_status() === PHP_SESSION_NONE) session_start();
 
-        /* A) POST : ajout commentaire (form sur la page épisode) */
+        /*ajout commentaire*/
         if ($_SERVER['REQUEST_METHOD'] === 'POST'
             && isset($_POST['do']) && $_POST['do'] === 'add_comment') {
 
@@ -52,7 +46,6 @@ class EpisodeAction
             exit;
         }
 
-        /* B) POST AJAX : autosave position + “vu” + gestion déjà visionnée */
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id']) && isset($_POST['episode_id'])) {
             $idUser = (int) $_SESSION['user_id'];
             $idEp   = (int) ($_POST['episode_id'] ?? 0);
@@ -63,21 +56,20 @@ class EpisodeAction
                 $vueRepo = new EpisodeVueRepository();
                 $vueRepo->upsert($idUser, $idEp, $pos, $vu);
 
-                // Si l’épisode est terminé -> MAJ "reprendre" et peut-être "déjà visionnées"
+                // Si l’épisode est terminé -> "reprendre" et peut-être "déjà visionnées"
                 if ($vu === 1) {
                     $epRepo  = new EpisodeRepository();
                     $episode = $epRepo->findById($idEp);
 
                     if ($episode) {
-                        // 1) Reprendre : mémoriser dernier épisode
+                        //mémoriser dernier épisode
                         $progRepo = new ProgressRepository();
                         $progRepo->upsert($idUser, (int)$episode->id_serie, $idEp);
 
-                        // 2) Déjà visionnées : si tous les épisodes de la série sont vus
-                        $pdo = $this->pdo();
+                        // Si tous les épisodes de la série sont vus
+                        $pdo = ConnectionFactory::getConnection();
                         $idSerie = (int)$episode->id_serie;
 
-                        // nb total d'épisodes de la série
                         $st = $pdo->prepare("SELECT COUNT(*) FROM episode WHERE id_serie = :s");
                         $st->execute([':s' => $idSerie]);
                         $total = (int) $st->fetchColumn();
@@ -92,13 +84,13 @@ class EpisodeAction
                         $vus = (int) $st2->fetchColumn();
 
                         if ($total > 0 && $vus >= $total) {
-                            // marquer dans already_watched (idempotent)
+                            // marquer dans already_watched 
                             $pdo->prepare(
                                 "INSERT IGNORE INTO already_watched (id_user, id_serie, marked_at)
                                  VALUES (:u, :s, NOW())"
                             )->execute([':u' => $idUser, ':s' => $idSerie]);
 
-                            // optionnel : retirer la série de progress
+                            // retirer la série de progress
                             $pdo->prepare(
                                 "DELETE FROM progress WHERE id_user = :u AND id_serie = :s"
                             )->execute([':u' => $idUser, ':s' => $idSerie]);
@@ -112,7 +104,6 @@ class EpisodeAction
             exit;
         }
 
-        /* C) GET : afficher l’épisode + reprise auto */
         $id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if ($id <= 0) {
             $content = EpisodeRenderer::renderNotFound();
@@ -128,7 +119,6 @@ class EpisodeAction
             return $content;
         }
 
-        // Préfix "videos/" si besoin
         if (!empty($ep->file) && substr((string)$ep->file, 0, 7) !== 'videos/') {
             $ep->file = 'videos/' . $ep->file;
         }

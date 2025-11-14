@@ -67,7 +67,7 @@ class SerieAction
             }
         }
 
-        // Construire le HTML - Header avec image
+        // Construire le HTML
         $html = "<div class='serie-detail-header'>
                     <div class='serie-detail-poster'>
                         <img src='{$imgPath}' alt='{$titre}' onerror=\"this.src='images/default.jpg'\">

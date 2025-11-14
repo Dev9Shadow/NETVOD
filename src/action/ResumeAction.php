@@ -46,7 +46,6 @@ class ResumeAction
             $epNum     = htmlspecialchars((string)($r['ep_numero'] ?? '?'));
             $posSec    = (int)($r['position_sec'] ?? 0);
 
-            // Formatage mm:ss simple
             $mm = floor($posSec / 60);
             $ss = $posSec % 60;
             $posTxt = sprintf('%02d:%02d', $mm, $ss);

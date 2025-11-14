@@ -139,4 +139,3 @@ CREATE TABLE password_reset (
     FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
 );
 
-SET foreign_key_checks = 1;
